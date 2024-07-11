@@ -1,7 +1,8 @@
 (ns net.eraserhead.geppetto.gcode-test
   (:require
-   [clojure.test :refer [deftest are]]))
+   [clojure.test :refer [deftest are]]
+   [net.eraserhead.geppetto.gcode :as gcode]))
 
 (deftest t-parse-line
-  (are (= result (parse-line line)) [line result]
-    "" nil))
+  (are [line result] (= result (gcode/parse-line line))
+    "" 42))

@@ -1,5 +1,5 @@
 {
-  description = "TODO: fill me in";
+  description = "Geppetto: A G-code manipulation library for Clojure";
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
   };

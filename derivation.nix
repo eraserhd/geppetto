@@ -7,7 +7,7 @@ stdenv.mkDerivation rec {
   src = ./.;
 
   meta = with lib; {
-    description = "TODO: fill me in";
+    description = "G-code manipulation library for Clojure";
     homepage = "https://github.com/eraserhd/geppetto";
     license = licenses.publicDomain;
     platforms = platforms.all;

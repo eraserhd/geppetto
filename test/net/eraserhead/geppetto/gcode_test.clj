@@ -1,6 +1,7 @@
 (ns net.eraserhead.geppetto.gcode-test
   (:require
-   [clojure.test :refer [deftest is]]))
+   [clojure.test :refer [deftest are]]))
 
-(deftest t-foo
-  (is (= 4 (+ 2 2))))
+(deftest t-parse-line
+  (are (= result (parse-line line)) [line result]
+    "" nil))

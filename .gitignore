@@ -1,2 +1,4 @@
 /result
 /.direnv
+/.nrepl-port
+/.cpcache

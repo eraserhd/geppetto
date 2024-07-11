@@ -4,5 +4,7 @@
    [net.eraserhead.geppetto.gcode :as gcode]))
 
 (deftest t-parse-line
-  (are [line result] (= result (gcode/parse-line line))
-    "" 42))
+  (are [line k result] (= result (k (gcode/parse-line line)))
+    ""        ::gcode/source ""
+    "; hello" ::gcode/source "; hello"
+    "N100"    ::gcode/source "N100"))

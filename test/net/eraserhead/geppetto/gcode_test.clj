@@ -1,4 +1,4 @@
-(ns net.eraserhead.geppetto-test
+(ns net.eraserhead.geppetto.gcode-test
   (:require
    [clojure.test :refer [deftest is]]))
 

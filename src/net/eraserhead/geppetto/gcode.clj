@@ -1,6 +1,7 @@
 (ns net.eraserhead.geppetto.gcode
   "Implement of g-code parsing per RS274/NGC Interpreter."
   (:require
+   [clojure.string :as str]
    [instaparse.core :as insta]))
 
 (def parser
@@ -55,7 +56,7 @@ white_space              = ' ' | '\t' .
  
          :mid_line_letter
          (fn mid_line_letter* [letter]
-           (keyword "net.eraserhead.geppetto.gcode" letter))
+           (keyword "net.eraserhead.geppetto.gcode" (str/upper-case letter)))
 
          :real_number
          (fn real_number* [& parts]

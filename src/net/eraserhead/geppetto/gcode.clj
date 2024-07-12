@@ -18,12 +18,9 @@ comment                  = message | ordinary_comment .
 comment_character        = #'[^()]' .
 digit                    = <{white_space}> + ('0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9') .
 expression               = '[' + real_value + { binary_operation + real_value } + ']' .
-letter_g                 = 'G' | 'g' .
-letter_m                 = 'M' | 'm' .
-letter_s                 = 'S' | 's' .
-line_number              = <'N' | 'n'> + digit + [digit] + [digit] + [digit] + [digit] .
-message                  = '(' + {white_space} + letter_m + {white_space} + letter_s +
-                           {white_space} + letter_g + {white_space} + ',' +
+line_number              = <'N'> + digit + [digit] + [digit] + [digit] + [digit] .
+message                  = '(' + {white_space} + 'M' + {white_space} + 'S' +
+                           {white_space} + 'G' + {white_space} + ',' +
                            {comment_character} + ')' .
 mid_line_letter          = <{white_space}> #'[AaBbCcDdFfGgHhIiJjKkLlMmPpQqRrSsTtXxYyZz]'
 <mid_line_word>          = mid_line_letter + real_value .
@@ -42,7 +39,8 @@ real_number              = <{white_space}> + [ '+' | '-' ] +
 segment                  = mid_line_word | comment | parameter_setting .
 unary_combo              = ordinary_unary_combo | arc_tangent_combo .
 white_space              = ' ' | '\t' .
-   "))
+   "
+   :string-ci true))
 
 (defn parse-line [line]
   (->> (parser line)

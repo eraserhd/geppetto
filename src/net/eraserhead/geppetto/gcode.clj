@@ -35,7 +35,7 @@ ordinary_unary_operation = 'ABS' | 'ACOS' | 'ASIN' | 'COS' | 'EXP' |
 parameter_index          = real_value .
 parameter_setting        = '#' + parameter_index + '=' + real_value .
 parameter_value          = '#' + parameter_index .
-real_number              = [ '+' | '-' ] +
+real_number              = <{white_space}> + [ '+' | '-' ] +
                            (( digit + { digit } + ['.'] + {digit}) |
                             ( '.' + digit + {digit})) .
 <real_value>             = real_number | expression | parameter_value | unary_combo .

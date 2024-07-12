@@ -7,7 +7,7 @@
 (def parser
   (insta/parser
     "
-<line>                   = <{white_space}> + ['/'] + [line_number] + {segment} .
+<line>                   = <{white_space}> + ['/'] + [line_number] + {segment} + <{white_space}>.
 
 arc_tangent_combo        = 'ATAN' + expression + '/' + expression .
 binary_operation         = binary_operation1 | binary_operation2 | binary_operation3 .

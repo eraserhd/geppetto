@@ -64,7 +64,7 @@ white_space              = ' ' | '\t' .
                 (tree-seq vector? seq)
                 (filter string?)
                 (apply str)
-                read-string))
+                Double/parseDouble))
 
          :segment
          vector})))

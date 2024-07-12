@@ -6,7 +6,7 @@
 (def parser
   (insta/parser
     "
-line                     = ['/'] + [line_number] + {segment} .
+<line>                   = ['/'] + [line_number] + {segment} .
 
 arc_tangent_combo        = 'ATAN' + expression + '/' + expression .
 binary_operation         = binary_operation1 | binary_operation2 | binary_operation3 .
@@ -68,9 +68,6 @@ white_space              = ' ' | '\t' .
   (->> (parser line)
        (insta/transform
         {:letter_g (constantly ::G)
-
-         :line
-         vector
 
          :line_number
          (fn line-number* [& digits]

@@ -10,9 +10,9 @@
     "(" ::gcode/comment
     ";" ::gcode/comment))
 
-;(deftest t-parse-words [line]
-;  (are [line words] (= words (gcode/parse-words line))
-;    "N100"  [[::gcode/N 100]]))
+(deftest t-parse-words
+  (are [line words] (= words (gcode/parse-words line))
+    "N100"  [[::gcode/N 100]]))
 
 ;(deftest t-parse-line
 ;  (are [line k result] (= result (k (gcode/parse-line line)))

@@ -8,8 +8,11 @@
    (";" "(") ::comment
    (keyword "net.eraserhead.geppetto.gcode" letter)))
 
+(defn- parse-word [word]
+  [(word-keyword (subs word 0 1)) (read-string (subs word 1))])
 (defn parse-words [line]
-  (str/split line #"(?=[ABCDFGHIJKLMNPQRSTXYZ])"))
+  (->> (str/split line #"(?=[ABCDFGHIJKLMNPQRSTXYZ])")
+       (map parse-word)))
 
 ;(defn parse-line [line]
 ;  "Parse a single line of g-code, presented as a string."

@@ -17,35 +17,14 @@ comment                  = message | ordinary_comment .
 comment_character        = #'[^()]' .
 digit                    = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' .
 expression               = '[' + real_value + { binary_operation + real_value } + ']' .
-letter_a                 = 'A' | 'a' .
-letter_b                 = 'B' | 'b' .
-letter_c                 = 'C' | 'c' .
-letter_d                 = 'D' | 'd' .
-letter_f                 = 'F' | 'f' .
 letter_g                 = 'G' | 'g' .
-letter_h                 = 'H' | 'h' .
-letter_i                 = 'I' | 'i' .
-letter_j                 = 'J' | 'j' .
-letter_k                 = 'K' | 'k' .
-letter_l                 = 'L' | 'l' .
 letter_m                 = 'M' | 'm' .
-letter_n                 = 'N' | 'n' .
-letter_p                 = 'P' | 'p' .
-letter_q                 = 'Q' | 'q' .
-letter_r                 = 'R' | 'r' .
 letter_s                 = 'S' | 's' .
-letter_t                 = 'T' | 't' .
-letter_x                 = 'X' | 'x' .
-letter_y                 = 'Y' | 'y' .
-letter_z                 = 'Z' | 'z' .
-line_number              = <letter_n> + digit + [digit] + [digit] + [digit] + [digit] .
+line_number              = <'N' | 'n'> + digit + [digit] + [digit] + [digit] + [digit] .
 message                  = '(' + {white_space} + letter_m + {white_space} + letter_s +
                            {white_space} + letter_g + {white_space} + ',' +
                            {comment_character} + ')' .
-<mid_line_letter>        = letter_a | letter_b | letter_c | letter_d | letter_f |
-                           letter_g | letter_h | letter_i | letter_j | letter_k |
-                           letter_l | letter_m | letter_p | letter_q | letter_r |
-                           letter_s | letter_t | letter_x | letter_y | letter_z .
+mid_line_letter          = #'[AaBbCcDdFfGgHhIiJjKkLlMmPpQqRrSsTtXxYyZz]'
 <mid_line_word>          = mid_line_letter + real_value .
 ordinary_comment         = '(' + {comment_character} + ')' .
 ordinary_unary_combo     = ordinary_unary_operation + expression .
@@ -67,17 +46,19 @@ white_space              = ' ' | '\t' .
 (defn parse-line [line]
   (->> (parser line)
        (insta/transform
-        {:letter_g (constantly ::G)
-
-         :line_number
-         (fn line-number* [& digits]
+        {:line_number
+         (fn line_number* [& digits]
            [::line-number (->> digits
                                (map second)
                                (apply str)
                                read-string)])
+ 
+         :mid_line_letter
+         (fn mid_line_letter* [letter]
+           (keyword "net.eraserhead.geppetto.gcode" letter))
 
          :real_number
-         (fn real-number* [& parts]
+         (fn real_number* [& parts]
            (->> (vec parts)
                 (tree-seq vector? seq)
                 (filter string?)

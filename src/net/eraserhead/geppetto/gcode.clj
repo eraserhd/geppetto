@@ -17,7 +17,7 @@ binary_operation3        = 'AND' | 'XOR' | '-' | 'OR' | '+' .
 comment                  = message | ordinary_comment .
 comment_character        = #'[^()]' .
 digit                    = <{white_space}> + ('0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9') .
-expression               = '[' + real_value + { binary_operation + real_value } + ']' .
+expression               = <'['> + real_value + { binary_operation + real_value } + <']'> .
 line_number              = <'N'> + digit + [digit] + [digit] + [digit] + [digit] .
 message                  = '(' + {white_space} + 'M' + {white_space} + 'S' +
                            {white_space} + 'G' + {white_space} + ',' +
@@ -45,7 +45,11 @@ white_space              = ' ' | '\t' .
 (defn parse-line [line]
   (->> (parser line)
        (insta/transform
-        {:line_number
+        {:expression
+         (fn expression* [& args]
+           (apply list '+ args))
+
+         :line_number
          (fn line_number* [& digits]
            [::line-number (->> digits
                                (map second)

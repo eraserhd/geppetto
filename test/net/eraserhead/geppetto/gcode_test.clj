@@ -25,4 +25,5 @@
     "f+ .4"          [[::gcode/F 0.4]]
     "f+0 .4"         [[::gcode/F 0.4]]
     "g1x4.2f99z6"    [[::gcode/G 1.0] [::gcode/X 4.2] [::gcode/F 99.0] [::gcode/Z 6.0]]
-    "g1 x4.2 f99 z6" [[::gcode/G 1.0] [::gcode/X 4.2] [::gcode/F 99.0] [::gcode/Z 6.0]]))
+    "g1 x4.2 f99 z6" [[::gcode/G 1.0] [::gcode/X 4.2] [::gcode/F 99.0] [::gcode/Z 6.0]]
+    "f[4 + 7]"       '[[::gcode/F (+ 4.0 7.0)]]))

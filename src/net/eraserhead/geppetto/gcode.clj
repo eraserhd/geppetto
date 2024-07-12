@@ -25,7 +25,7 @@ line_number              = <'N' | 'n'> + digit + [digit] + [digit] + [digit] + [
 message                  = '(' + {white_space} + letter_m + {white_space} + letter_s +
                            {white_space} + letter_g + {white_space} + ',' +
                            {comment_character} + ')' .
-mid_line_letter          = #'[AaBbCcDdFfGgHhIiJjKkLlMmPpQqRrSsTtXxYyZz]'
+mid_line_letter          = <{white_space}> #'[AaBbCcDdFfGgHhIiJjKkLlMmPpQqRrSsTtXxYyZz]'
 <mid_line_word>          = mid_line_letter + real_value .
 ordinary_comment         = '(' + {comment_character} + ')' .
 ordinary_unary_combo     = ordinary_unary_operation + expression .

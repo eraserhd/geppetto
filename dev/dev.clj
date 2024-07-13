@@ -6,4 +6,4 @@
 
 (defn run-tests
   ([]          (run-tests "test"))
-  ([& symbols] (eftest/run-tests (eftest/find-tests symbols) {})))
+  ([& symbols] (eftest/run-tests (eftest/find-tests symbols) {:capture-output? false})))

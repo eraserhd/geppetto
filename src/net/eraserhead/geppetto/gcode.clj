@@ -87,7 +87,7 @@ white_space              = ' ' | '\t' .
            [::line-number (->> digits
                                (map second)
                                (apply str)
-                               read-string)])
+                               Long/parseLong)])
  
          :mid_line_letter
          (fn mid_line_letter* [letter]

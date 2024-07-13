@@ -7,6 +7,7 @@
   (are [line tree] (= tree (gcode/parse-line line))
     "N105"           [[::gcode/line-number 105]]
     "n105"           [[::gcode/line-number 105]]
+    "n010"           [[::gcode/line-number 10]]
     " n105"          [[::gcode/line-number 105]]
     "\t n105"        [[::gcode/line-number 105]]
     "n105 \t\t"      [[::gcode/line-number 105]]

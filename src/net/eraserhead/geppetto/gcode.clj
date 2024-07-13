@@ -32,7 +32,7 @@
 
 arc_tangent_combo        = 'atan' expression '/' expression .
 binary_operation1        = real_value ['**' binary_operation1] .
-binary_operation2        = binary_operation1 [('/' | 'mod' | '*') binary_operation2] .
+binary_operation2        = [binary_operation2 ('/' | 'mod' | '*')] binary_operation1 .
 binary_operation3        = [binary_operation3 ('and' | 'xor' | '-' | 'or' | '+')] binary_operation2 .
 comment                  = message | ordinary_comment .
 comment_character        = #'[^()]' .
@@ -62,29 +62,21 @@ white_space              = ' ' | '\t' .
    "
    :string-ci true))
 
+(defn- binary-operation
+  ([a]      a)
+  ([a op b] (list (symbol op) a b)))
+
 (defn parse-line [line]
   (->> line
        normalize-line
        parser
        (insta/transform
-        {           
-         :binary_operation1
-         (fn expr*
-           ([a] a)
-           ([a op b]
-            (list (symbol op) a b)))
-
+        {:binary_operation1
+         binary-operation
          :binary_operation2
-         (fn expr*
-           ([a] a)
-           ([a op b]
-            (list (symbol op) a b)))
-
+         binary-operation
          :binary_operation3
-         (fn expr*
-           ([a] a)
-           ([a op b]
-            (list (symbol op) a b)))
+         binary-operation
 
          :line_number
          (fn line_number* [& digits]

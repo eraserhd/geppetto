@@ -45,7 +45,7 @@ message                  = '(' {white_space} 'm' {white_space} 's'
 mid_line_letter          = #'(?i)[ABCDFGHIJKLMPQRSTXYZ]'
 <mid_line_word>          = mid_line_letter + real_value .
 ordinary_comment         = '(' {comment_character} ')' .
-ordinary_unary_combo     = ordinary_unary_operation expression .
+ordinary_unary_combo   = ordinary_unary_operation expression .
 ordinary_unary_operation = 'abs' | 'acos' | 'asin' | 'cos' | 'exp' |
                            'fix' | 'fup' | 'ln' | 'round' | 'sin' |
                            'sqrt' | 'tan' .
@@ -57,7 +57,7 @@ real_number              = [ '+' | '-' ]
                             ('.' digit {digit})) .
 <real_value>             = real_number | expression | parameter_value | unary_combo .
 segment                  = mid_line_word | comment | parameter_setting .
-unary_combo              = ordinary_unary_combo | arc_tangent_combo .
+<unary_combo>            = ordinary_unary_combo | arc_tangent_combo .
 white_space              = ' ' | '\t' .
    "
    :string-ci true))
@@ -84,10 +84,15 @@ white_space              = ' ' | '\t' .
                                (map second)
                                (apply str)
                                Long/parseLong)])
- 
+
          :mid_line_letter
          (fn mid_line_letter* [letter]
            (keyword "net.eraserhead.geppetto.gcode" (str/upper-case letter)))
+
+         :ordinary_unary_operation
+         symbol
+         :ordinary_unary_combo
+         list
 
          :real_number
          (fn real_number* [& parts]

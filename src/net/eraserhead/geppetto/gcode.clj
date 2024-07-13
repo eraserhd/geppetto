@@ -4,6 +4,30 @@
    [clojure.string :as str]
    [instaparse.core :as insta]))
 
+
+(defn remove-spaces
+  "Removes any spaces not in comments per RS274/NGC D.3.1."
+  [s]
+  (->> s
+    (reduce (fn [[state out] ch]
+              (case [state ch]
+                ([:start \space]
+                 [:start \tab])
+                [:start out]
+
+                ([:start \(])
+                [\( (conj out ch)]
+                ([:start \;])
+                [\; (conj out ch)]
+              
+                ([\( \)])
+                [:start (conj out ch)]
+                   
+                [state (conj out ch)]))
+            [:start []])
+    second
+    (apply str)))
+
 (def parser
   (insta/parser
     "
@@ -11,9 +35,9 @@
 
 arc_tangent_combo        = 'ATAN' + expression + '/' + expression .
 binary_operation         = binary_operation1 | binary_operation2 | binary_operation3 .
-binary_operation1        = '**' .
-binary_operation2        = '/' | 'MOD' | '*' .
-binary_operation3        = 'AND' | 'XOR' | '-' | 'OR' | '+' .
+<binary_operation1>      = '**' .
+<binary_operation2>      = '/' | 'MOD' | '*' .
+<binary_operation3>      = 'AND' | 'XOR' | '-' | 'OR' | '+' .
 comment                  = message | ordinary_comment .
 comment_character        = #'[^()]' .
 digit                    = <{white_space}> + ('0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9') .
@@ -43,11 +67,20 @@ white_space              = ' ' | '\t' .
    :string-ci true))
 
 (defn parse-line [line]
-  (->> (parser line)
+  (->> line
+       remove-spaces
+       parser
        (insta/transform
-        {:expression
-         (fn expression* [& args]
-           (apply list '+ args))
+        {:binary_operation
+         symbol
+           
+         :expression
+         (fn expr*
+           ([a] a)
+           ([a op b]
+            (list op a b))
+           ([a op b op2 & cs]
+            (apply expr* (expr* a op b) op2 cs)))
 
          :line_number
          (fn line_number* [& digits]

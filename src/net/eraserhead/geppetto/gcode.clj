@@ -30,7 +30,7 @@
     "
 <line>                   = ['/'] [line_number] {segment} .
 
-arc_tangent_combo        = 'atan' expression '/' expression .
+arc_tangent_combo        = <'atan'> expression <'/'> expression .
 binary_operation1        = real_value ['**' binary_operation1] .
 binary_operation2        = [binary_operation2 ('/' | 'mod' | '*')] binary_operation1 .
 binary_operation3        = [binary_operation3 ('and' | 'xor' | '-' | 'or' | '+')] binary_operation2 .
@@ -71,7 +71,10 @@ white_space              = ' ' | '\t' .
        normalize-line
        parser
        (insta/transform
-        {:binary_operation1
+        {:arc_tangent_combo
+         #(apply list 'atan %&)
+
+         :binary_operation1
          binary-operation
          :binary_operation2
          binary-operation

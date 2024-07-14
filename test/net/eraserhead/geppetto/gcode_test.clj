@@ -38,4 +38,5 @@
     "f[[3+6]*4]"     '[[::gcode/F (* (+ 3.0 6.0) 4.0)]]
     "f[abs[-6]]"     '[[::gcode/F (abs -6.0)]]
     "f[atan[6]/[4]]" '[[::gcode/F (atan 6.0 4.0)]]
-    "f#1"            '[[::gcode/F (parameter-get 1.0)]]))
+    "f#1"            '[[::gcode/F (parameter-get 1.0)]]
+    "#22=32.4"       '[(parameter-set! 22.0 32.4)]))

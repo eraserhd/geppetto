@@ -43,20 +43,20 @@ message                  = '(' {white_space} 'm' {white_space} 's'
                            {white_space} 'g' {white_space} ','
                            {comment_character} ')' .
 mid_line_letter          = #'(?i)[ABCDFGHIJKLMPQRSTXYZ]'
-<mid_line_word>          = mid_line_letter + real_value .
+mid_line_word            = mid_line_letter + real_value .
 ordinary_comment         = '(' {comment_character} ')' .
 ordinary_unary_combo     = ordinary_unary_operation expression .
 ordinary_unary_operation = 'abs' | 'acos' | 'asin' | 'cos' | 'exp' |
                            'fix' | 'fup' | 'ln' | 'round' | 'sin' |
                            'sqrt' | 'tan' .
 <parameter_index>        = real_value .
-parameter_setting        = '#' parameter_index '=' real_value .
+parameter_setting        = <'#'> parameter_index <'='> real_value .
 parameter_value          = <'#'> parameter_index .
 real_number              = [ '+' | '-' ]
                            (( digit {digit} ['.'] {digit}) |
                             ('.' digit {digit})) .
 <real_value>             = real_number | expression | parameter_value | unary_combo .
-segment                  = mid_line_word | comment | parameter_setting .
+<segment>                = mid_line_word | comment | parameter_setting .
 <unary_combo>            = ordinary_unary_combo | arc_tangent_combo .
 white_space              = ' ' | '\t' .
    "
@@ -91,11 +91,17 @@ white_space              = ' ' | '\t' .
          :mid_line_letter
          (fn mid_line_letter* [letter]
            (keyword "net.eraserhead.geppetto.gcode" (str/upper-case letter)))
+         :mid_line_word
+         vector
 
          :ordinary_unary_operation
          symbol
          :ordinary_unary_combo
          list
+
+         :parameter_setting
+         (fn parameter_setting* [p v]
+           (list 'parameter-set! p v))
 
          :parameter_value
          (fn parameter_value* [p]
@@ -107,7 +113,4 @@ white_space              = ' ' | '\t' .
                 (tree-seq vector? seq)
                 (filter string?)
                 (apply str)
-                Double/parseDouble))
-
-         :segment
-         vector})))
+                Double/parseDouble))})))

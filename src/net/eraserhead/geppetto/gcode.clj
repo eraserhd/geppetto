@@ -52,9 +52,8 @@ ordinary_unary_operation = 'abs' | 'acos' | 'asin' | 'cos' | 'exp' |
 <parameter_index>        = real_value .
 parameter_setting        = <'#'> parameter_index <'='> real_value .
 parameter_value          = <'#'> parameter_index .
-real_number              = [ '+' | '-' ]
-                           (( digit {digit} ['.'] {digit}) |
-                            ('.' digit {digit})) .
+real_number              = [ '+' | '-' ] (( digit {digit} ['.'] {digit}) |
+                                          ('.' digit {digit})) .
 <real_value>             = real_number | expression | parameter_value | unary_combo .
 <segment>                = mid_line_word | comment | parameter_setting .
 <unary_combo>            = ordinary_unary_combo | arc_tangent_combo .

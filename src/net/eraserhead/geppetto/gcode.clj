@@ -71,50 +71,24 @@ white_space              = ' ' | '\t' .
        normalize-line
        parser
        (insta/transform
-        {:arc_tangent_combo
-         #(apply list 'atan %&)
-
-         :binary_operation1
-         binary-operation
-         :binary_operation2
-         binary-operation
-         :binary_operation3
-         binary-operation
-
+        {:arc_tangent_combo #(apply list 'atan %&)
+         :binary_operation1 binary-operation
+         :binary_operation2 binary-operation
+         :binary_operation3 binary-operation
          :line_number
          (fn line_number* [& digits]
            [::line-number (->> digits
                                (map second)
                                (apply str)
                                Long/parseLong)])
-
-         :message
-         (fn message* [& contents]
-           (vector ::message (apply str contents)))
-
-         :mid_line_letter
-         (fn mid_line_letter* [letter]
-           (keyword "net.eraserhead.geppetto.gcode" (str/upper-case letter)))
-         :mid_line_word
-         vector
-         
-         :ordinary_comment
-         (fn ordinary_comment* [& contents]
-           (vector ::comment (apply str contents)))
-
-         :ordinary_unary_operation
-         symbol
-         :ordinary_unary_combo
-         list
-
-         :parameter_setting
-         (fn parameter_setting* [p v]
-           (list ::parameter= p v))
-
-         :parameter_value
-         (fn parameter_value* [p]
-           (list 'parameter p))
-
+         :message                  #(vector ::message (apply str %&))
+         :mid_line_letter          #(keyword "net.eraserhead.geppetto.gcode" (str/upper-case %1))
+         :mid_line_word            vector
+         :ordinary_comment         #(vector ::comment (apply str %&))
+         :ordinary_unary_operation symbol
+         :ordinary_unary_combo     list
+         :parameter_setting        #(list ::parameter= %1 %2)
+         :parameter_value          #(list 'parameter %1)
          :real_number
          (fn real_number* [& parts]
            (->> (vec parts)

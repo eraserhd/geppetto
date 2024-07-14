@@ -109,11 +109,11 @@ white_space              = ' ' | '\t' .
 
          :parameter_setting
          (fn parameter_setting* [p v]
-           (list ::parameter-set! p v))
+           (list ::parameter= p v))
 
          :parameter_value
          (fn parameter_value* [p]
-           (list 'parameter-get p))
+           (list 'parameter p))
 
          :real_number
          (fn real_number* [& parts]

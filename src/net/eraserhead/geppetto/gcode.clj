@@ -34,14 +34,14 @@ arc_tangent_combo        = <'atan'> expression <'/'> expression .
 binary_operation1        = real_value ['**' binary_operation1] .
 binary_operation2        = [binary_operation2 ('/' | 'mod' | '*')] binary_operation1 .
 binary_operation3        = [binary_operation3 ('and' | 'xor' | '-' | 'or' | '+')] binary_operation2 .
-<comment>                = message | ordinary_comment .
+<comment>                = message / ordinary_comment .
 <comment_character>      = #'[^()]' .
 digit                    = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' .
 <expression>             = <'['> binary_operation3 <']'> .
 line_number              = <'N'> digit [digit] [digit] [digit] [digit] .
-message                  = '(' {white_space} 'm' {white_space} 's'
-                           {white_space} 'g' {white_space} ','
-                           {comment_character} ')' .
+message                  = <'(' {white_space} 'm' {white_space} 's'
+                           {white_space} 'g' {white_space} ','>
+                           {comment_character} <')'> .
 mid_line_letter          = #'(?i)[ABCDFGHIJKLMPQRSTXYZ]'
 mid_line_word            = mid_line_letter + real_value .
 ordinary_comment         = <'('> {comment_character} <')'> .
@@ -88,6 +88,10 @@ white_space              = ' ' | '\t' .
                                (apply str)
                                Long/parseLong)])
 
+         :message
+         (fn message* [& contents]
+           (vector ::message (apply str contents)))
+
          :mid_line_letter
          (fn mid_line_letter* [letter]
            (keyword "net.eraserhead.geppetto.gcode" (str/upper-case letter)))
@@ -96,7 +100,7 @@ white_space              = ' ' | '\t' .
          
          :ordinary_comment
          (fn ordinary_comment* [& contents]
-           (list 'comment (apply str contents)))
+           (vector ::comment (apply str contents)))
 
          :ordinary_unary_operation
          symbol
@@ -105,7 +109,7 @@ white_space              = ' ' | '\t' .
 
          :parameter_setting
          (fn parameter_setting* [p v]
-           (list 'parameter-set! p v))
+           (list ::parameter-set! p v))
 
          :parameter_value
          (fn parameter_value* [p]

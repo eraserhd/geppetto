@@ -4,7 +4,6 @@
    [clojure.string :as str]
    [instaparse.core :as insta]))
 
-
 (defn normalize-line
   "Removes any spaces, and lowercase letters, not in comments per RS274/NGC D.3.1."
   [s]
@@ -22,8 +21,6 @@
             [:start []])
     second
     (apply str)))
-
-
 
 (def parser
   (insta/parser
@@ -70,7 +67,7 @@ white_space              = ' ' | '\t' .
        normalize-line
        parser
        (insta/transform
-        {:arc_tangent_combo        #(apply list 'atan %&)
+        {:arc_tangent_combo        #(list 'atan %1 %2)
          :binary_operation1        binary-operation
          :binary_operation2        binary-operation
          :binary_operation3        binary-operation

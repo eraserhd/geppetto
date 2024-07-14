@@ -40,4 +40,5 @@
     "f[atan[6]/[4]]" '[[::gcode/F (atan 6.0 4.0)]]
     "f#1"            '[[::gcode/F (parameter-get 1.0)]]
     "#22=32.4"       '[(parameter-set! 22.0 32.4)]
-    "#[1+2]=[3+4]"   '[(parameter-set! (+ 1.0 2.0) (+ 3.0 4.0))]))
+    "#[1+2]=[3+4]"   '[(parameter-set! (+ 1.0 2.0) (+ 3.0 4.0))]
+    "##2=3"          '[(parameter-set! (parameter-get 2.0) 3.0)]))

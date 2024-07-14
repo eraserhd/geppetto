@@ -34,8 +34,8 @@ arc_tangent_combo        = <'atan'> expression <'/'> expression .
 binary_operation1        = real_value ['**' binary_operation1] .
 binary_operation2        = [binary_operation2 ('/' | 'mod' | '*')] binary_operation1 .
 binary_operation3        = [binary_operation3 ('and' | 'xor' | '-' | 'or' | '+')] binary_operation2 .
-comment                  = message | ordinary_comment .
-comment_character        = #'[^()]' .
+<comment>                = message | ordinary_comment .
+<comment_character>      = #'[^()]' .
 digit                    = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' .
 <expression>             = <'['> binary_operation3 <']'> .
 line_number              = <'N'> digit [digit] [digit] [digit] [digit] .
@@ -44,7 +44,7 @@ message                  = '(' {white_space} 'm' {white_space} 's'
                            {comment_character} ')' .
 mid_line_letter          = #'(?i)[ABCDFGHIJKLMPQRSTXYZ]'
 mid_line_word            = mid_line_letter + real_value .
-ordinary_comment         = '(' {comment_character} ')' .
+ordinary_comment         = <'('> {comment_character} <')'> .
 ordinary_unary_combo     = ordinary_unary_operation expression .
 ordinary_unary_operation = 'abs' | 'acos' | 'asin' | 'cos' | 'exp' |
                            'fix' | 'fup' | 'ln' | 'round' | 'sin' |
@@ -93,6 +93,10 @@ white_space              = ' ' | '\t' .
            (keyword "net.eraserhead.geppetto.gcode" (str/upper-case letter)))
          :mid_line_word
          vector
+         
+         :ordinary_comment
+         (fn ordinary_comment* [& contents]
+           (list 'comment (apply str contents)))
 
          :ordinary_unary_operation
          symbol

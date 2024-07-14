@@ -5,14 +5,14 @@
 
 (deftest t-parse-line
   (are [line tree] (= tree (gcode/parse-line line))
-    "N105"             [[::gcode/line-number 105]]
-    "n105"             [[::gcode/line-number 105]]
-    "n010"             [[::gcode/line-number 10]]
-    " n105"            [[::gcode/line-number 105]]
-    "\t n105"          [[::gcode/line-number 105]]
-    "n105 \t\t"        [[::gcode/line-number 105]]
-    "n 105"            [[::gcode/line-number 105]]
-    "n1 2\t3  4 5"     [[::gcode/line-number 12345]]
+    "N105"             [[::gcode/line-number 105.0]]
+    "n105"             [[::gcode/line-number 105.0]]
+    "n010"             [[::gcode/line-number 10.0]]
+    " n105"            [[::gcode/line-number 105.0]]
+    "\t n105"          [[::gcode/line-number 105.0]]
+    "n105 \t\t"        [[::gcode/line-number 105.0]]
+    "n 105"            [[::gcode/line-number 105.0]]
+    "n1 2\t3  4 5"     [[::gcode/line-number 12345.0]]
     "G-1.4"            [[::gcode/G -1.4]]
     "g-1.4"            [[::gcode/G -1.4]]
     "F2400"            [[::gcode/F 2400.0]]
@@ -45,4 +45,8 @@
     "##2=3"            '[[::gcode/parameter= (parameter 2.0) 3.0]]
     "(Test comment)"   '[[::gcode/comment "Test comment"]]
     "(MSG,Hello TH)"   '[[::gcode/message "Hello TH"]]
-    "(m S\tg ,Hel TH)" '[[::gcode/message "Hel TH"]]))
+    "(m S\tg ,Hel TH)" '[[::gcode/message "Hel TH"]]
+
+    ;; linuxcnc extensions
+    "n100.74"          '[[::gcode/line-number 100.74]]
+    "u62.4 v1.6 w11.4" '[[::gcode/U 62.4] [::gcode/V 1.6] [::gcode/W 11.4]]))

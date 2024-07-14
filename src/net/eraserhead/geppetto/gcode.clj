@@ -35,11 +35,11 @@ binary_operation3        = [binary_operation3 ('and' | 'xor' | '-' | 'or' | '+')
 <comment_character>      = #'[^()]' .
 <digit>                  = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' .
 <expression>             = <'['> binary_operation3 <']'> .
-line_number              = <'N'> digit [digit] [digit] [digit] [digit] .
+line_number              = <'N'> real_number .
 message                  = <'(' {white_space} 'm' {white_space} 's'
                            {white_space} 'g' {white_space} ','>
                            {comment_character} <')'> .
-mid_line_letter          = #'(?i)[ABCDFGHIJKLMPQRSTXYZ]'
+mid_line_letter          = #'(?i)[ABCDFGHIJKLMPQRSTUVWXYZ]'
 mid_line_word            = mid_line_letter + real_value .
 ordinary_comment         = <'('> {comment_character} <')'> .
 ordinary_unary_combo     = ordinary_unary_operation expression .
@@ -71,7 +71,7 @@ white_space              = ' ' | '\t' .
          :binary_operation1        binary-operation
          :binary_operation2        binary-operation
          :binary_operation3        binary-operation
-         :line_number              #(vector ::line-number (Long/parseLong (apply str %&)))
+         :line_number              #(vector ::line-number %1)
          :message                  #(vector ::message (apply str %&))
          :mid_line_letter          #(keyword "net.eraserhead.geppetto.gcode" (str/upper-case %1))
          :mid_line_word            vector

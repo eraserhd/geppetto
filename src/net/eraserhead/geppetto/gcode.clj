@@ -45,13 +45,13 @@ message                  = '(' {white_space} 'm' {white_space} 's'
 mid_line_letter          = #'(?i)[ABCDFGHIJKLMPQRSTXYZ]'
 <mid_line_word>          = mid_line_letter + real_value .
 ordinary_comment         = '(' {comment_character} ')' .
-ordinary_unary_combo   = ordinary_unary_operation expression .
+ordinary_unary_combo     = ordinary_unary_operation expression .
 ordinary_unary_operation = 'abs' | 'acos' | 'asin' | 'cos' | 'exp' |
                            'fix' | 'fup' | 'ln' | 'round' | 'sin' |
                            'sqrt' | 'tan' .
-parameter_index          = real_value .
+<parameter_index>        = real_value .
 parameter_setting        = '#' parameter_index '=' real_value .
-parameter_value          = '#' parameter_index .
+parameter_value          = <'#'> parameter_index .
 real_number              = [ '+' | '-' ]
                            (( digit {digit} ['.'] {digit}) |
                             ('.' digit {digit})) .
@@ -96,6 +96,10 @@ white_space              = ' ' | '\t' .
          symbol
          :ordinary_unary_combo
          list
+
+         :parameter_value
+         (fn parameter_value* [p]
+           (list 'parameter-get p))
 
          :real_number
          (fn real_number* [& parts]

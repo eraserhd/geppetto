@@ -36,7 +36,7 @@ binary_operation2        = [binary_operation2 ('/' | 'mod' | '*')] binary_operat
 binary_operation3        = [binary_operation3 ('and' | 'xor' | '-' | 'or' | '+')] binary_operation2 .
 <comment>                = message / ordinary_comment .
 <comment_character>      = #'[^()]' .
-digit                    = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' .
+<digit>                  = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' .
 <expression>             = <'['> binary_operation3 <']'> .
 line_number              = <'N'> digit [digit] [digit] [digit] [digit] .
 message                  = <'(' {white_space} 'm' {white_space} 's'
@@ -78,7 +78,6 @@ white_space              = ' ' | '\t' .
          :line_number
          (fn line_number* [& digits]
            [::line-number (->> digits
-                               (map second)
                                (apply str)
                                Long/parseLong)])
          :message                  #(vector ::message (apply str %&))
@@ -89,10 +88,4 @@ white_space              = ' ' | '\t' .
          :ordinary_unary_combo     list
          :parameter_setting        #(list ::parameter= %1 %2)
          :parameter_value          #(list 'parameter %1)
-         :real_number
-         (fn real_number* [& parts]
-           (->> (vec parts)
-                (tree-seq vector? seq)
-                (filter string?)
-                (apply str)
-                Double/parseDouble))})))
+         :real_number              #(Double/parseDouble (apply str %&))})))

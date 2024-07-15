@@ -50,8 +50,9 @@ ordinary_unary_operation = 'abs' | 'acos' | 'asin' | 'cos' | 'exp' |
 parameter_setting        = <'#'> parameter_index <'='> real_value .
 parameter_value          = <'#'> parameter_index .
 integer                  = [ '+' | '-' ] digit {digit} .
-real_number              = [ '+' | '-' ] (( digit {digit} ['.'] {digit}) |
+decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) |
                                           ('.' digit {digit})) .
+<real_number>            = integer | decimal .
 <real_value>             = real_number | expression | parameter_value | unary_combo .
 <segment>                = mid_line_word | comment | parameter_setting .
 <unary_combo>            = ordinary_unary_combo | arc_tangent_combo .
@@ -82,4 +83,4 @@ white_space              = ' ' | '\t' .
          :ordinary_unary_combo     list
          :parameter_setting        #(list ::parameter= %1 %2)
          :parameter_value          #(list 'parameter %1)
-         :real_number              #(Double/parseDouble (apply str %&))})))
+         :decimal                  #(Double/parseDouble (apply str %&))})))

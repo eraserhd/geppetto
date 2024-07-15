@@ -50,4 +50,5 @@
     ;; linuxcnc extensions
     "n100.74"          '[[::gcode/line-number [100 74]]]
     "u62.4 v1.6 w11.4" '[[::gcode/U 62.4] [::gcode/V 1.6] [::gcode/W 11.4]]
-    "F#<localvalue>"   '[[::gcode/F (parameter "localvalue")]]))
+    "F#<localvalue>"   '[[::gcode/F (parameter "localvalue")]]
+    "F#<LoC aL vAl Ue>"'[[::gcode/F (parameter "localvalue")]]))

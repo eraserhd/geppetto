@@ -46,7 +46,8 @@ ordinary_unary_combo     = ordinary_unary_operation expression .
 ordinary_unary_operation = 'abs' | 'acos' | 'asin' | 'cos' | 'exp' |
                            'fix' | 'fup' | 'ln' | 'round' | 'sin' |
                            'sqrt' | 'tan' .
-<parameter_index>        = real_value .
+<parameter_index>        = real_value | parameter_name .
+parameter_name           = <'<'> {#'[^>]'} <'>'>
 parameter_setting        = <'#'> parameter_index <'='> real_value .
 parameter_value          = <'#'> parameter_index .
 integer                  = [ '+' | '-' ] digit {digit} .
@@ -81,6 +82,7 @@ white_space              = ' ' | '\t' .
          :ordinary_comment         #(vector ::comment (apply str %&))
          :ordinary_unary_operation symbol
          :ordinary_unary_combo     list
+         :parameter_name           #(apply str %&)
          :parameter_setting        #(list ::parameter= %1 %2)
          :parameter_value          #(list 'parameter %1)
          :decimal                  #(Double/parseDouble (apply str %&))})))

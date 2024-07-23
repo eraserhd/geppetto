@@ -30,12 +30,13 @@
 arc_tangent_combo        = <'atan'> expression <'/'> expression .
 binary_operation1        = real_value ['**' binary_operation1] .
 binary_operation2        = [binary_operation2 ('/' | 'mod' | '*')] binary_operation1 .
-binary_operation3        = [binary_operation3 ('eq' | 'ne' | 'gt' | 'ge' | 'lt' | 'le')] binary_operation2 .
-binary_operation4        = [binary_operation4 ('and' | 'xor' | '-' | 'or' | '+')] binary_operation3 .
+binary_operation3        = [binary_operation3 ('+' | '-')] binary_operation2 .
+binary_operation4        = [binary_operation4 ('eq' | 'ne' | 'gt' | 'ge' | 'lt' | 'le')] binary_operation3 .
+binary_operation5        = [binary_operation5 ('and' | 'xor' | 'or' )] binary_operation4 .
 <comment>                = message / ordinary_comment .
 <comment_character>      = #'[^()]' .
 <digit>                  = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' .
-<expression>             = <'['> binary_operation4 <']'> .
+<expression>             = <'['> binary_operation5 <']'> .
 line_number              = <'N'> integer [<'.'> integer] .
 message                  = <'(' {white_space} 'm' {white_space} 's'
                            {white_space} 'g' {white_space} ','>
@@ -76,6 +77,7 @@ white_space              = ' ' | '\t' .
          :binary_operation2        binary-operation
          :binary_operation3        binary-operation
          :binary_operation4        binary-operation
+         :binary_operation5        binary-operation
          :integer                  #(Long/parseLong (apply str %&))
          :line_number              #(vector ::line-number (vec %&))
          :message                  #(vector ::message (apply str %&))

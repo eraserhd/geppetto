@@ -61,4 +61,12 @@
     "f[1 gt2]"         '[[::gcode/F (gt 1 2)]]
     "f[1ge2]"          '[[::gcode/F (ge 1 2)]]
     "f[1.0lt 2.4]"     '[[::gcode/F (lt 1.0 2.4)]]
-    "f[1 le 2]"        '[[::gcode/F (le 1 2)]]))
+    "f[1 le 2]"        '[[::gcode/F (le 1 2)]]
+
+    ;; linuxcnc precedence, from table 3
+    "f[1 and 1 * 2 ** 3 eq 2 - 1 and 6 mod 2]"
+    '[[::gcode/F (and (and 1
+                           (eq (* 1 (** 2 3))
+                               (- 2 1)))
+                      (mod 6 2))]]))
+                                                

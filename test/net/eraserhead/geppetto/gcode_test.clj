@@ -68,5 +68,8 @@
     '[[::gcode/F (and (and 1
                            (eq (* 1 (** 2 3))
                                (- 2 1)))
-                      (mod 6 2))]]))
+                      (mod 6 2))]]
+
+    ;; EXISTS[]
+    "f[ExiSTS[#<foo>]]"'[[::gcode/F (exists "foo")]]))
                                                 

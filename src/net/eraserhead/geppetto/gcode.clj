@@ -48,6 +48,7 @@ ordinary_unary_combo     = ordinary_unary_operation expression .
 ordinary_unary_operation = 'abs' | 'acos' | 'asin' | 'cos' | 'exp' |
                            'fix' | 'fup' | 'ln' | 'round' | 'sin' |
                            'sqrt' | 'tan' .
+exists_combo             = <'exists[#'> parameter_name <']'>
 <parameter_index>        = real_value | parameter_name .
 parameter_name           = <'<'> {#'[^>]'} <'>'>
 parameter_setting        = <'#'> parameter_index <'='> real_value .
@@ -58,7 +59,7 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) |
 <real_number>            = integer | decimal .
 <real_value>             = real_number | expression | parameter_value | unary_combo .
 <segment>                = mid_line_word | comment | parameter_setting .
-<unary_combo>            = ordinary_unary_combo | arc_tangent_combo .
+<unary_combo>            = ordinary_unary_combo | arc_tangent_combo | exists_combo .
 white_space              = ' ' | '\t' .
    "
    :string-ci true))
@@ -78,6 +79,7 @@ white_space              = ' ' | '\t' .
          :binary_operation3        binary-operation
          :binary_operation4        binary-operation
          :binary_operation5        binary-operation
+         :exists_combo             #(list 'exists %1)
          :integer                  #(Long/parseLong (apply str %&))
          :line_number              #(vector ::line-number (vec %&))
          :message                  #(vector ::message (apply str %&))

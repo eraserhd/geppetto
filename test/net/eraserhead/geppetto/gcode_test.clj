@@ -53,4 +53,12 @@
     "F#<localvalue>"   '[[::gcode/F (parameter "localvalue")]]
     "F#<LoC aL vAl Ue>"'[[::gcode/F (parameter "localvalue")]]
     "#<foo>=42.0"      '[[::gcode/parameter= "foo" 42.0]]
-    "##<foo>=#<bar>"   '[[::gcode/parameter= (parameter "foo") (parameter "bar")]]))
+    "##<foo>=#<bar>"   '[[::gcode/parameter= (parameter "foo") (parameter "bar")]]
+
+    ;; linuxcnc operators
+    "f[1 eq 2]"        '[[::gcode/F (eq 1 2)]]
+    "f[1ne 2]"         '[[::gcode/F (ne 1 2)]]
+    "f[1 gt2]"         '[[::gcode/F (gt 1 2)]]
+    "f[1ge2]"          '[[::gcode/F (ge 1 2)]]
+    "f[1.0lt 2.4]"     '[[::gcode/F (lt 1.0 2.4)]]
+    "f[1 le 2]"        '[[::gcode/F (le 1 2)]]))

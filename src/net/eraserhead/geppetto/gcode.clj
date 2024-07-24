@@ -27,37 +27,38 @@
     "
 <line>                   = ['/'] [line_number] {segment} .
 
-arc_tangent_combo        = <'atan'> expression <'/'> expression .
 binary_operation1        = real_value ['**' binary_operation1] .
 binary_operation2        = [binary_operation2 ('/' | 'mod' | '*')] binary_operation1 .
 binary_operation3        = [binary_operation3 ('+' | '-')] binary_operation2 .
 binary_operation4        = [binary_operation4 ('eq' | 'ne' | 'gt' | 'ge' | 'lt' | 'le')] binary_operation3 .
 binary_operation5        = [binary_operation5 ('and' | 'xor' | 'or' )] binary_operation4 .
-
-comment                  = <'('> {comment_character} <')'>.
-<comment_character>      = #'[^()]' .
-
-<digit>                  = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' .
 <expression>             = <'['> binary_operation5 <']'> .
-line_number              = <'N'> integer [<'.'> integer] .
-mid_line_letter          = #'(?i)[ABCDFGHIJKLMPQRSTUVWXYZ]'
-mid_line_word            = mid_line_letter + real_value .
+
+<unary_combo>            = ordinary_unary_combo | arc_tangent_combo | exists_combo .
+arc_tangent_combo        = <'atan'> expression <'/'> expression .
 ordinary_unary_combo     = ordinary_unary_operation expression .
 ordinary_unary_operation = 'abs' | 'acos' | 'asin' | 'cos' | 'exp' |
                            'fix' | 'fup' | 'ln' | 'round' | 'sin' |
                            'sqrt' | 'tan' .
 exists_combo             = <'exists[#'> parameter_name <']'>
+
+comment                  = <'('> {comment_character} <')'>.
+<comment_character>      = #'[^()]' .
+
+<digit>                  = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' .
+line_number              = <'N'> integer [<'.'> integer] .
+mid_line_letter          = #'(?i)[ABCDFGHIJKLMPQRSTUVWXYZ]'
+mid_line_word            = mid_line_letter + real_value .
 <parameter_index>        = real_value | parameter_name .
 parameter_name           = <'<'> {#'[^>]'} <'>'>
 parameter_setting        = <'#'> parameter_index <'='> real_value .
 parameter_value          = <'#'> parameter_index .
 integer                  = [ '+' | '-' ] digit {digit} .
-decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) |
-                                          ('.' digit {digit})) .
+decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' digit {digit})) .
 <real_number>            = integer | decimal .
 <real_value>             = real_number | expression | parameter_value | unary_combo .
 <segment>                = mid_line_word | comment | parameter_setting .
-<unary_combo>            = ordinary_unary_combo | arc_tangent_combo | exists_combo .
+
 <white_space>            = ' ' | '\t' .
    "
    :string-ci true))

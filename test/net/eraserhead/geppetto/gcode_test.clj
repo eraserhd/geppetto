@@ -70,6 +70,19 @@
                                (- 2 1)))
                       (mod 6 2))]]
 
-    ;; EXISTS[]
-    "f[ExiSTS[#<foo>]]"'[[::gcode/F (exists "foo")]]))
-                                                
+    "f[ExiSTS[#<foo>]]" '[[::gcode/F (exists "foo")]]
+    "(DEBUG,h ello)"    '[[::gcode/debug "h ello"]]
+    "(print,hi mom)"    '[[::gcode/print "hi mom"]]
+    ;; var substitution
+    ;; formatting
+
+    "(LO GOpEN,fo.txt)" '[[::gcode/logopen "fo.txt"]]
+    "(LOGAPPEND,x.log)" '[[::gcode/logappend "x.log"]]
+    "(logClose)"        '[[::gcode/logclose]]
+    "(log,birch)"       '[[::gcode/log "birch"]]
+    ;; var substitution
+    ;; formatting
+
+    ;(PROBEOPEN filename.txt)
+    "(PROBECLOSE)"      '[[::gcode/probeclose]]
+    "(probEC LOSE)"     '[[::gcode/probeclose]]))

@@ -33,17 +33,15 @@ binary_operation2        = [binary_operation2 ('/' | 'mod' | '*')] binary_operat
 binary_operation3        = [binary_operation3 ('+' | '-')] binary_operation2 .
 binary_operation4        = [binary_operation4 ('eq' | 'ne' | 'gt' | 'ge' | 'lt' | 'le')] binary_operation3 .
 binary_operation5        = [binary_operation5 ('and' | 'xor' | 'or' )] binary_operation4 .
-<comment>                = message / ordinary_comment .
+
+comment                  = <'('> {comment_character} <')'>.
 <comment_character>      = #'[^()]' .
+
 <digit>                  = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' .
 <expression>             = <'['> binary_operation5 <']'> .
 line_number              = <'N'> integer [<'.'> integer] .
-message                  = <'(' {white_space} 'm' {white_space} 's'
-                           {white_space} 'g' {white_space} ','>
-                           {comment_character} <')'> .
 mid_line_letter          = #'(?i)[ABCDFGHIJKLMPQRSTUVWXYZ]'
 mid_line_word            = mid_line_letter + real_value .
-ordinary_comment         = <'('> {comment_character} <')'> .
 ordinary_unary_combo     = ordinary_unary_operation expression .
 ordinary_unary_operation = 'abs' | 'acos' | 'asin' | 'cos' | 'exp' |
                            'fix' | 'fup' | 'ln' | 'round' | 'sin' |
@@ -60,13 +58,31 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) |
 <real_value>             = real_number | expression | parameter_value | unary_combo .
 <segment>                = mid_line_word | comment | parameter_setting .
 <unary_combo>            = ordinary_unary_combo | arc_tangent_combo | exists_combo .
-white_space              = ' ' | '\t' .
+<white_space>            = ' ' | '\t' .
    "
    :string-ci true))
 
 (defn- binary-operation
   ([a]      a)
   ([a op b] (list (symbol op) a b)))
+            
+(defn- gcode-comment [& args]
+  (let [full-text  (apply str args)
+        [tag text] (str/split full-text #"," 2)
+        tag        (str/lower-case (str/replace tag #"\s+" ""))]
+    (if text
+      (case tag
+        "debug"     [::debug text]
+        "log"       [::log text]
+        "logappend" [::logappend text]
+        "logopen"   [::logopen text]
+        "msg"       [::message text]
+        "print"     [::print text]
+        [::comment full-text])
+      (case tag
+        "logclose"   [::logclose]
+        "probeclose" [::probeclose]
+        [::comment full-text]))))
 
 (defn parse-line [line]
   (->> line
@@ -79,6 +95,8 @@ white_space              = ' ' | '\t' .
          :binary_operation3        binary-operation
          :binary_operation4        binary-operation
          :binary_operation5        binary-operation
+         :comment                  gcode-comment
+         :debug                    #(vector ::debug (apply str %&))
          :exists_combo             #(list 'exists %1)
          :integer                  #(Long/parseLong (apply str %&))
          :line_number              #(vector ::line-number (vec %&))

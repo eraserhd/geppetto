@@ -2,7 +2,8 @@
   "Implement of g-code parsing per RS274/NGC Interpreter."
   (:require
    [clojure.string :as str]
-   [instaparse.core :as insta]))
+   [instaparse.core :as insta]
+   [meander.epsilon :as m]))
 
 (defn normalize-line
   "Removes any spaces, and lowercase letters, not in comments per RS274/NGC D.3.1."
@@ -71,19 +72,16 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
   (let [full-text  (apply str args)
         [tag text] (str/split full-text #"," 2)
         tag        (str/lower-case (str/replace tag #"\s+" ""))]
-    (if text
-      (case tag
-        "debug"     [::debug text]
-        "log"       [::log text]
-        "logappend" [::logappend text]
-        "logopen"   [::logopen text]
-        "msg"       [::message text]
-        "print"     [::print text]
-        [::comment full-text])
-      (case tag
-        "logclose"   [::logclose]
-        "probeclose" [::probeclose]
-        [::comment full-text]))))
+    (m/match [tag text]
+      ["debug" ?text]     [::debug ?text]
+      ["log" ?text]       [::log ?text]
+      ["logappend" ?text] [::logappend ?text]
+      ["logopen" ?text]   [::logopen ?text]
+      ["logclose" nil]    [::logclose]
+      ["msg" ?text]       [::message ?text]
+      ["print" ?text]     [::print ?text]
+      ["probeclose" nil]  [::probeclose]
+      _                   [::comment full-text])))
 
 (defn parse-line [line]
   (->> line

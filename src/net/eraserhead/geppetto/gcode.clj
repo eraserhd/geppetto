@@ -66,21 +66,48 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
 (defn- binary-operation
   ([a]      a)
   ([a op b] (list (symbol op) a b)))
-            
+
+(defn- spacey-incasey-prefix?
+  "Is prefix a prefix of full-text, ignoring case and any whitespace in full-text?
+
+  Returns false or the remainder of the text for further processing."
+  [prefix full-text]
+  (loop [i 0
+         j 0]
+    (cond
+     (= (count prefix) j)
+     (subs full-text i)
+
+     (= (count full-text) i)
+     false
+
+     (= (Character/toLowerCase (nth full-text i))
+        (Character/toLowerCase (nth prefix j)))
+     (recur (inc i) (inc j))
+
+     (Character/isWhitespace (nth full-text i))
+     (recur (inc i) j)
+
+     :else
+     false)))
+
 (defn- gcode-comment [& args]
-  (let [full-text  (apply str args)
-        [tag text] (str/split full-text #"," 2)
-        tag        (str/lower-case (str/replace tag #"\s+" ""))]
-    (m/match [tag text]
-      ["debug" ?text]     [::debug ?text]
-      ["log" ?text]       [::log ?text]
-      ["logappend" ?text] [::logappend ?text]
-      ["logopen" ?text]   [::logopen ?text]
-      ["logclose" nil]    [::logclose]
-      ["msg" ?text]       [::message ?text]
-      ["print" ?text]     [::print ?text]
-      ["probeclose" nil]  [::probeclose]
-      _                   [::comment full-text])))
+  (let [full-text  (apply str args)]
+    (condp spacey-incasey-prefix? full-text
+      "debug,"     :>> #(vector ::debug %1)
+      "log,"       :>> #(vector ::log %1)
+      "logappend," :>> #(vector ::logappend %1)
+      "logopen,"   :>> #(vector ::logopen %1)
+      "logclose"   :>> #(if (str/blank? %1)
+                          [::logclose]
+                          [::comment full-text])
+      "msg,"       :>> #(vector ::message %1)
+      "print,"     :>> #(vector ::print %1)
+      "probeopen " :>> #(vector ::probeopen %1)
+      "probeclose" :>> #(if (str/blank? %1)
+                          [::probeclose]
+                          [::comment full-text])
+      [::comment full-text])))
 
 (defn parse-line [line]
   (->> line
@@ -94,11 +121,9 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
          :binary_operation4        binary-operation
          :binary_operation5        binary-operation
          :comment                  gcode-comment
-         :debug                    #(vector ::debug (apply str %&))
          :exists_combo             #(list 'exists %1)
          :integer                  #(Long/parseLong (apply str %&))
          :line_number              #(vector ::line-number (vec %&))
-         :message                  #(vector ::message (apply str %&))
          :mid_line_letter          #(keyword "net.eraserhead.geppetto.gcode" (str/upper-case %1))
          :mid_line_word            vector
          :ordinary_comment         #(vector ::comment (apply str %&))

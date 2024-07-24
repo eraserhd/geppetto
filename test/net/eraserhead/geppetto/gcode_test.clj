@@ -79,10 +79,13 @@
     "(LO GOpEN,fo.txt)" '[[::gcode/logopen "fo.txt"]]
     "(LOGAPPEND,x.log)" '[[::gcode/logappend "x.log"]]
     "(logClose)"        '[[::gcode/logclose]]
+    "(logClose )"       '[[::gcode/logclose]]
+    "(logCloseX)"       '[[::gcode/comment "logCloseX"]]
     "(log,birch)"       '[[::gcode/log "birch"]]
     ;; var substitution
     ;; formatting
 
-    ;(PROBEOPEN filename.txt)
+    "(PROBEOPEN fn.p)"  '[[::gcode/probeopen "fn.p"]]
     "(PROBECLOSE)"      '[[::gcode/probeclose]]
-    "(probEC LOSE)"     '[[::gcode/probeclose]]))
+    "(probEC LOSE)"     '[[::gcode/probeclose]]
+    "(probEC LOSEX)"    '[[::gcode/comment "probEC LOSEX"]]))

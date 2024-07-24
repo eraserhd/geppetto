@@ -10,15 +10,14 @@
   [s]
   (->> s
     (reduce (fn [[state out] ch]
-              (case [state ch]
-                ([:start \space] [:start \tab]) [:start out]
-                ([:start \(])                   [\( (conj out ch)]
-                ([:start \;])                   [\; (conj out ch)]
-                ([\( \)])                       [:start (conj out ch)]
-                   
-                (case state
-                  (\( \;) [state (conj out ch)]
-                  [state (conj out (Character/toLowerCase ch))])))
+              (m/match [state ch]
+                [:start (m/or \space \tab)] [:start out]
+                [:start \(]                 [\( (conj out \()]
+                [:start \;]                 [\; (conj out \;)]
+                [\(     \)]                 [:start (conj out \))]
+                [\(     ?ch]                [\( (conj out ?ch)]
+                [\;     ?ch]                [\; (conj out ?ch)]
+                [?state ?ch]                [?state (conj out (Character/toLowerCase ?ch))]))
             [:start []])
     second
     (apply str)))

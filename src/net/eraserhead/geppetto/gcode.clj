@@ -92,19 +92,20 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
        :else
        nil))))
 
+(defn- find-comment-parameters [text]
+  (->> (re-seq #"(?:([^#%]+)|#\s*(\d+)|#\s*<([^>]*)>|%(d|f|lf)|%\.(\d)f)" text)
+       (map (fn [matches]
+              (m/match matches
+               [_ (m/pred some? ?text) _ _ _ _]         [::text ?text]
+               [_ _ (m/pred some? ?param-number) _ _ _] [::parameter (Long/parseLong ?param-number)]
+               [_ _ _ (m/pred some? ?param-name) _ _]   [::parameter (normalize-line ?param-name)]
+               [_ _ _ _ "d" _]                          [::format-decimals 0]
+               [_ _ _ _ "f" _]                          [::format-decimals 4]
+               [_ _ _ _ "lf" _]                         [::format-decimals 6]
+               [_ _ _ _ _ (m/pred some? ?digit)]        [::format-decimals (Long/parseLong ?digit)])))))
+
 (m/defsyntax special-comment [prefix pat]
   `(m/app (spacey-incasey-prefix-matcher ~prefix) (m/pred some?) ~pat))
-
-(defn- find-comment-parameters [text]
-  (->> (re-seq #"(?:([^#%]+)|#\s*(\d+)|#\s*<([^>]*)>|%(d|f|lf))" text)
-       (map (fn [[_ text param-number param-name format-specifier]]
-              (cond
-               text                      [::text text]
-               param-number              [::parameter (Long/parseLong param-number)]
-               param-name                [::parameter (normalize-line param-name)]
-               (= "d" format-specifier)  [::format-decimals 0]
-               (= "f" format-specifier)  [::format-decimals 4]
-               (= "lf" format-specifier) [::format-decimals 6])))))
 
 (defn- gcode-comment [& args]
   (m/match (apply str args)

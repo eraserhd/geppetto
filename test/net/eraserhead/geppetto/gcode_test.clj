@@ -90,6 +90,7 @@
     "(DEBUG,%d)"        '[[::gcode/debug [::gcode/format-decimals 0]]]
     "(DEBUG,%f)"        '[[::gcode/debug [::gcode/format-decimals 4]]]
     "(DEBUG,%lf)"       '[[::gcode/debug [::gcode/format-decimals 6]]]
+    "(DEBUG,%.7f)"      '[[::gcode/debug [::gcode/format-decimals 7]]]
 
     "(LO GOpEN,fo.txt)" '[[::gcode/logopen "fo.txt"]]
     "(LOGAPPEND,x.log)" '[[::gcode/logappend "x.log"]]

@@ -87,8 +87,9 @@
                            [::gcode/parameter "f"]
                            [::gcode/parameter 3]]]
     "(DEBUG,#< f o o >)"'[[::gcode/debug [::gcode/parameter "foo"]]]
-
-    ;; formatting
+    "(DEBUG,%d)"        '[[::gcode/debug [::gcode/format-decimals 0]]]
+    "(DEBUG,%f)"        '[[::gcode/debug [::gcode/format-decimals 4]]]
+    "(DEBUG,%lf)"       '[[::gcode/debug [::gcode/format-decimals 6]]]
 
     "(LO GOpEN,fo.txt)" '[[::gcode/logopen "fo.txt"]]
     "(LOGAPPEND,x.log)" '[[::gcode/logappend "x.log"]]
@@ -96,8 +97,6 @@
     "(logClose )"       '[[::gcode/logclose]]
     "(logCloseX)"       '[[::gcode/comment "logCloseX"]]
     "(log,birch)"       '[[::gcode/log [::gcode/text "birch"]]]
-    ;; var substitution
-    ;; formatting
 
     "(PROBEOPEN fn.p)"  '[[::gcode/probeopen "fn.p"]]
     "(PROBECLOSE)"      '[[::gcode/probeclose]]

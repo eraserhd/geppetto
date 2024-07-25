@@ -99,19 +99,19 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
   (->> (re-seq #"(?:([^#]+)|#\s*(\d+)|#\s*<([^>]*)>)" text)
        (map (fn [[_ text param-number param-name]]
               (cond
-               text         text
-               param-number (list 'parameter (Long/parseLong param-number))
-               param-name   (list 'parameter (normalize-line param-name)))))))
+               text         [::text text]
+               param-number [::parameter (Long/parseLong param-number)]
+               param-name   [::parameter (normalize-line param-name)])))))
 
 (defn- gcode-comment [& args]
   (m/match (apply str args)
-    (special-comment "debug," ?text)                   [::debug (find-comment-parameters ?text)]
-    (special-comment "log," ?text)                     [::log (find-comment-parameters ?text)]
+    (special-comment "debug," ?text)                   (into [::debug] (find-comment-parameters ?text))
+    (special-comment "log," ?text)                     (into [::log] (find-comment-parameters ?text))
     (special-comment "logappend," ?text)               [::logappend ?text]
     (special-comment "logopen," ?text)                 [::logopen ?text]
     (special-comment "logclose" (m/pred str/blank?))   [::logclose]
     (special-comment "msg," ?text)                     [::message ?text]
-    (special-comment "print," ?text)                   [::print (find-comment-parameters ?text)]
+    (special-comment "print," ?text)                   (into [::print] (find-comment-parameters ?text))
     (special-comment "probeopen " ?text)               [::probeopen ?text]
     (special-comment "probeclose" (m/pred str/blank?)) [::probeclose]
     ?text                                              [::comment ?text]))

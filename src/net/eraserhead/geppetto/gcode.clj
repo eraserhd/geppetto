@@ -67,48 +67,47 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
   ([a]      a)
   ([a op b] (list (symbol op) a b)))
 
-(defn- spacey-incasey-prefix?
+(defn- spacey-incasey-prefix-matcher
   "Is prefix a prefix of full-text, ignoring case and any whitespace in full-text?
 
   Returns false or the remainder of the text for further processing."
-  [prefix full-text]
-  (loop [i 0
-         j 0]
-    (cond
-     (= (count prefix) j)
-     (subs full-text i)
+  [prefix]
+  (fn [full-text]
+    (loop [i 0
+           j 0]
+      (cond
+       (= (count prefix) j)
+       (subs full-text i)
 
-     (= (count full-text) i)
-     false
+       (= (count full-text) i)
+       nil
 
-     (= (Character/toLowerCase (nth full-text i))
-        (Character/toLowerCase (nth prefix j)))
-     (recur (inc i) (inc j))
+       (= (Character/toLowerCase (nth full-text i))
+          (Character/toLowerCase (nth prefix j)))
+       (recur (inc i) (inc j))
 
-     (Character/isWhitespace (nth full-text i))
-     (recur (inc i) j)
+       (Character/isWhitespace (nth full-text i))
+       (recur (inc i) j)
 
-     :else
-     false)))
+       :else
+       nil))))
+
+(m/defsyntax special-comment [prefix pat]
+  `(m/app (spacey-incasey-prefix-matcher ~prefix) (m/pred some?) ~pat))
 
 (defn- gcode-comment [& args]
-  (let [full-text  (apply str args)]
-    (condp spacey-incasey-prefix? full-text
-      "debug,"     :>> #(vector ::debug %1)
-      "log,"       :>> #(vector ::log %1)
-      "logappend," :>> #(vector ::logappend %1)
-      "logopen,"   :>> #(vector ::logopen %1)
-      "logclose"   :>> #(if (str/blank? %1)
-                          [::logclose]
-                          [::comment full-text])
-      "msg,"       :>> #(vector ::message %1)
-      "print,"     :>> #(vector ::print %1)
-      "probeopen " :>> #(vector ::probeopen %1)
-      "probeclose" :>> #(if (str/blank? %1)
-                          [::probeclose]
-                          [::comment full-text])
-      [::comment full-text])))
-
+  (m/match (apply str args)
+    (special-comment "debug," ?text)                   [::debug ?text]
+    (special-comment "log," ?text)                     [::log ?text]
+    (special-comment "logappend," ?text)               [::logappend ?text]
+    (special-comment "logopen," ?text)                 [::logopen ?text]
+    (special-comment "logclose" (m/pred str/blank?))   [::logclose]
+    (special-comment "msg," ?text)                     [::message ?text]
+    (special-comment "print," ?text)                   [::print ?text]
+    (special-comment "probeopen " ?text)               [::probeopen ?text]
+    (special-comment "probeclose" (m/pred str/blank?)) [::probeclose]
+    ?text                                              [::comment ?text]))
+ 
 (defn parse-line [line]
   (->> line
        normalize-line

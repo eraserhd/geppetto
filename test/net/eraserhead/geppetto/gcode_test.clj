@@ -71,8 +71,14 @@
                       (mod 6 2))]]
 
     "f[ExiSTS[#<foo>]]" '[[::gcode/F (exists "foo")]]
-    "(DEBUG,h ello)"    '[[::gcode/debug "h ello"]]
-    "(print,hi mom)"    '[[::gcode/print "hi mom"]]
+    "(DEBUG,h ello)"    '[[::gcode/debug ["h ello"]]]
+    "(print,hi mom)"    '[[::gcode/print ["hi mom"]]]
+    "(DEBUG,#23)"       '[[::gcode/debug [(parameter 23)]]]
+    "(DEBUG,->#23<-)"   '[[::gcode/debug ["->" (parameter 23) "<-"]]]
+    "(DEBUG,->#<foo><-)"'[[::gcode/debug ["->" (parameter "foo") "<-"]]]
+    "(DEBUG,#1#<f>#3)"  '[[::gcode/debug [(parameter 1) (parameter "f") (parameter 3)]]]
+    "(DEBUG,#< f o o >)"'[[::gcode/debug [(parameter "foo")]]]
+
     ;; var substitution
     ;; formatting
 
@@ -81,7 +87,7 @@
     "(logClose)"        '[[::gcode/logclose]]
     "(logClose )"       '[[::gcode/logclose]]
     "(logCloseX)"       '[[::gcode/comment "logCloseX"]]
-    "(log,birch)"       '[[::gcode/log "birch"]]
+    "(log,birch)"       '[[::gcode/log ["birch"]]]
     ;; var substitution
     ;; formatting
 

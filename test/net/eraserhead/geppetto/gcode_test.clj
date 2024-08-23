@@ -91,6 +91,14 @@
     "(DEBUG,%f)"        '[[::gcode/debug [::gcode/format-decimals 4]]]
     "(DEBUG,%lf)"       '[[::gcode/debug [::gcode/format-decimals 6]]]
     "(DEBUG,%.7f)"      '[[::gcode/debug [::gcode/format-decimals 7]]]
+    "(print,%d#6 hi)"   '[[::gcode/print
+                           [::gcode/format-decimals 0]
+                           [::gcode/parameter 6]
+                           [::gcode/text " hi"]]]
+    "(LoG,%d#6 hi)"     '[[::gcode/log
+                           [::gcode/format-decimals 0]
+                           [::gcode/parameter 6]
+                           [::gcode/text " hi"]]]
 
     "(LO GOpEN,fo.txt)" '[[::gcode/logopen "fo.txt"]]
     "(LOGAPPEND,x.log)" '[[::gcode/logappend "x.log"]]

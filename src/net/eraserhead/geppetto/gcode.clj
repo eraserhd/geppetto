@@ -135,8 +135,15 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
          :exists_combo             #(list 'exists %1)
          :integer                  #(Long/parseLong (apply str %&))
          :line                     (fn [& args]
-                                     {::words args})
-         :line_number              #(vector ::line-number (vec %&))
+                                     (reduce (fn [line word]
+                                               (m/match word
+                                                 [:line_number & ?line_number]
+                                                 (assoc line ::line-number ?line_number)
+
+                                                 ?word
+                                                 (update line ::words #(conj (or % []) ?word))))
+                                             {}
+                                             args))
          :mid_line_letter          #(keyword "net.eraserhead.geppetto.gcode" (str/upper-case %1))
          :mid_line_word            vector
          :ordinary_comment         #(vector ::comment (apply str %&))

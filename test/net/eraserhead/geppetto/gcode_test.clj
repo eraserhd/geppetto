@@ -5,14 +5,14 @@
 
 (deftest t-parse-line
   (are [line tree] (= tree (gcode/parse-line line))
-    "N105"             {::gcode/words [[::gcode/line-number [105]]]}
-    "n105"             {::gcode/words [[::gcode/line-number [105]]]}
-    "n010"             {::gcode/words [[::gcode/line-number [10]]]}
-    " n105"            {::gcode/words [[::gcode/line-number [105]]]}
-    "\t n105"          {::gcode/words [[::gcode/line-number [105]]]}
-    "n105 \t\t"        {::gcode/words [[::gcode/line-number [105]]]}
-    "n 105"            {::gcode/words [[::gcode/line-number [105]]]}
-    "n1 2\t3  4 5"     {::gcode/words [[::gcode/line-number [12345]]]}
+    "N105"             {::gcode/line-number [105]}
+    "n105"             {::gcode/line-number [105]}
+    "n010"             {::gcode/line-number [10]}
+    " n105"            {::gcode/line-number [105]}
+    "\t n105"          {::gcode/line-number [105]}
+    "n105 \t\t"        {::gcode/line-number [105]}
+    "n 105"            {::gcode/line-number [105]}
+    "n1 2\t3  4 5"     {::gcode/line-number [12345]}
     "G-1.4"            {::gcode/words [[::gcode/G -1.4]]}
     "g-1.4"            {::gcode/words [[::gcode/G -1.4]]}
     "F2400"            {::gcode/words [[::gcode/F 2400]]}
@@ -48,7 +48,7 @@
     "(m S\tg ,Hel TH)" '{::gcode/words [[::gcode/message "Hel TH"]]}
 
     ;; linuxcnc extensions
-    "n100.74"          '{::gcode/words [[::gcode/line-number [100 74]]]}
+    "n100.74"          '{::gcode/line-number [100 74]}
     "u62.4 v1.6 w11.4" '{::gcode/words [[::gcode/U 62.4] [::gcode/V 1.6] [::gcode/W 11.4]]}
     "F#<localvalue>"   '{::gcode/words [[::gcode/F (parameter "localvalue")]]}
     "F#<LoC aL vAl Ue>"'{::gcode/words [[::gcode/F (parameter "localvalue")]]}

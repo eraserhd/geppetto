@@ -139,6 +139,9 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
                                                (m/match word
                                                  [:line_number & ?line_number]
                                                  (assoc line ::line-number ?line_number)
+                                                        
+                                                 [::F ?F-value]
+                                                 (assoc line ::F ?F-value)
 
                                                  ?word
                                                  (update line ::words #(conj (or % []) ?word))))

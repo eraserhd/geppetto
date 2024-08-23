@@ -25,7 +25,7 @@
 (def parser
   (insta/parser
     "
-<line>                   = ['/'] [line_number] {segment} .
+line                     = ['/'] [line_number] {segment} .
 
 binary_operation1        = real_value ['**' binary_operation1] .
 binary_operation2        = [binary_operation2 ('/' | 'mod' | '*')] binary_operation1 .
@@ -134,6 +134,8 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
          :comment                  gcode-comment
          :exists_combo             #(list 'exists %1)
          :integer                  #(Long/parseLong (apply str %&))
+         :line                     (fn [& args]
+                                     {::words args})
          :line_number              #(vector ::line-number (vec %&))
          :mid_line_letter          #(keyword "net.eraserhead.geppetto.gcode" (str/upper-case %1))
          :mid_line_word            vector

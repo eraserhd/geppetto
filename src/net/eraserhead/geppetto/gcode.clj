@@ -142,6 +142,9 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
                                                         
                                                  [::F ?F-value]
                                                  (assoc line ::F ?F-value)
+                                                        
+                                                 [:parameter_setting ?p ?value]
+                                                 (update line ::parameter= #(conj (or % []) [?p ?value]))
 
                                                  ?word
                                                  (update line ::words #(conj (or % []) ?word))))
@@ -153,6 +156,5 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
          :ordinary_unary_operation symbol
          :ordinary_unary_combo     list
          :parameter_name           #(apply str %&)
-         :parameter_setting        #(list ::parameter= %1 %2)
          :parameter_value          #(list 'parameter %1)
          :decimal                  #(Double/parseDouble (apply str %&))})))

@@ -40,9 +40,9 @@
     "f[atan[6]/[4]]"   '{::gcode/F (atan 6 4)}
     "f#1"              '{::gcode/F (parameter 1)}
     "f##1"             '{::gcode/F (parameter (parameter 1))}
-    "#22=32.4"         '{::gcode/words [[::gcode/parameter= 22 32.4]]}
-    "#[1+2]=[3+4]"     '{::gcode/words [[::gcode/parameter= (+ 1 2) (+ 3 4)]]}
-    "##2=3"            '{::gcode/words [[::gcode/parameter= (parameter 2) 3]]}
+    "#22=32.4"         '{::gcode/parameter= [[22 32.4]]}
+    "#[1+2]=[3+4]"     '{::gcode/parameter= [[(+ 1 2) (+ 3 4)]]}
+    "##2=3"            '{::gcode/parameter= [[(parameter 2) 3]]}
     "(Test comment)"   '{::gcode/words [[::gcode/comment "Test comment"]]}
     "(MSG,Hello TH)"   '{::gcode/words [[::gcode/message "Hello TH"]]}
     "(m S\tg ,Hel TH)" '{::gcode/words [[::gcode/message "Hel TH"]]}
@@ -52,8 +52,8 @@
     "u62.4 v1.6 w11.4" '{::gcode/words [[::gcode/U 62.4] [::gcode/V 1.6] [::gcode/W 11.4]]}
     "F#<localvalue>"   '{::gcode/F (parameter "localvalue")}
     "F#<LoC aL vAl Ue>"'{::gcode/F (parameter "localvalue")}
-    "#<foo>=42.0"      '{::gcode/words [[::gcode/parameter= "foo" 42.0]]}
-    "##<foo>=#<bar>"   '{::gcode/words [[::gcode/parameter= (parameter "foo") (parameter "bar")]]}
+    "#<foo>=42.0"      '{::gcode/parameter= [["foo" 42.0]]}
+    "##<foo>=#<bar>"   '{::gcode/parameter= [[(parameter "foo") (parameter "bar")]]}
 
     ;; linuxcnc operators
     "f[1 eq 2]"        '{::gcode/F (eq 1 2)}

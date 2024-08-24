@@ -135,25 +135,25 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
     [(m/pred binary-operation?) (m/cata ?a)]                 (m/subst ?a)
     [(m/pred binary-operation?) (m/cata ?a) ?op (m/cata ?b)] (m/subst ((m/app symbol ?op) ?a ?b))
     (comment-text "debug," ?text)                            (m/subst [::debug & (m/app find-comment-parameters ?text)])
-    (comment-text "log," ?text)                              (into [::log] (find-comment-parameters ?text))
-    (comment-text "logappend," ?text)                        [::logappend ?text]
-    (comment-text "logclose")                                [::logclose]
-    (comment-text "logopen," ?text)                          [::logopen ?text]
-    (comment-text "msg," ?text)                              [::message ?text]
-    (comment-text "print," ?text)                            (into [::print] (find-comment-parameters ?text))
-    (comment-text "probeclose")                              [::probeclose]
-    (comment-text "probeopen " ?text)                        [::probeopen ?text]
-    [:comment & (text ?text)]                                [::comment ?text]
+    (comment-text "log," ?text)                              (m/subst [::log & (m/app find-comment-parameters ?text)])
+    (comment-text "logappend," ?text)                        (m/subst [::logappend ?text])
+    (comment-text "logclose")                                (m/subst [::logclose])
+    (comment-text "logopen," ?text)                          (m/subst [::logopen ?text])
+    (comment-text "msg," ?text)                              (m/subst [::message ?text])
+    (comment-text "print," ?text)                            (m/subst [::print & (m/app find-comment-parameters ?text)])
+    (comment-text "probeclose")                              (m/subst [::probeclose])
+    (comment-text "probeopen " ?text)                        (m/subst [::probeopen ?text])
+    [:comment & (text ?text)]                                (m/subst [::comment ?text])
     [:exists_combo (m/cata ?varname)]                        (m/subst (exists ?varname))
-    [:integer & (text ?digits)]                              (Long/parseLong ?digits)
+    [:integer & (text ?digits)]                              (m/subst (m/app Long/parseLong ?digits))
     [:line . (m/cata !words) ...]                            (apply line->map !words)
-    [:mid_line_letter ?letter]                               (keyword "net.eraserhead.geppetto.gcode" (str/upper-case ?letter))
-    [:mid_line_word . (m/cata !args) ...]                    (vec !args)
+    [:mid_line_letter ?letter]                               (m/subst (m/keyword "net.eraserhead.geppetto.gcode" (m/app str/upper-case ?letter)))
+    [:mid_line_word . (m/cata !args) ...]                    (m/subst [!args ...])
     [:ordinary_unary_operation ?op]                          (m/subst (m/app symbol ?op))
     [:ordinary_unary_combo (m/cata ?op) (m/cata ?arg)]       (m/subst (?op ?arg))
-    [:parameter_name & (text ?parts)]                        ?parts
+    [:parameter_name & (text ?parts)]                        (m/subst ?parts)
     [:parameter_value (m/cata ?name)]                        (m/subst (parameter ?name))
-    [:decimal & (text ?parts)]                               (Double/parseDouble ?parts)
+    [:decimal & (text ?parts)]                               (m/subst (m/app Double/parseDouble ?parts))
     [(m/pred keyword? ?kw) . (m/cata !args) ...]             (m/subst [?kw . !args ...])
     ?other                                                   (m/subst ?other)))
 

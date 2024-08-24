@@ -139,14 +139,14 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
 
 (defn- fixup [tree]
   (m/match tree
-    [:arc_tangent_combo (m/cata ?a) (m/cata ?b)]  (list 'atan ?a ?b)
+    [:arc_tangent_combo (m/cata ?a) (m/cata ?b)]  (m/subst (atan ?a ?b))
     [:binary_operation1 . (m/cata !args) ...]     (apply binary-operation !args)
     [:binary_operation2 . (m/cata !args) ...]     (apply binary-operation !args)
     [:binary_operation3 . (m/cata !args) ...]     (apply binary-operation !args)
     [:binary_operation4 . (m/cata !args) ...]     (apply binary-operation !args)
     [:binary_operation5 . (m/cata !args) ...]     (apply binary-operation !args)
     [:comment & ?args]                            (apply gcode-comment ?args)
-    [:exists_combo (m/cata ?varname)]             (list 'exists ?varname)
+    [:exists_combo (m/cata ?varname)]             (m/subst (exists ?varname))
     [:integer & ?digits]                          (Long/parseLong (apply str ?digits))
     [:line . (m/cata !words) ...]                 (apply line->map !words)
     [:mid_line_letter ?letter]                    (keyword "net.eraserhead.geppetto.gcode" (str/upper-case ?letter))
@@ -155,7 +155,7 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
     [:ordinary_unary_operation ?op]               (symbol ?op)
     [:ordinary_unary_combo . (m/cata !args) ...]  (apply list !args)
     [:parameter_name & ?parts]                    (apply str ?parts)
-    [:parameter_value (m/cata ?param)]            (list 'parameter ?param)
+    [:parameter_value (m/cata ?name)]             (m/subst (parameter ?name))
     [:decimal & ?parts]                           (Double/parseDouble (apply str ?parts))
 
     [(m/pred keyword? ?kw) . (m/cata !args) ...]  (apply vector ?kw !args)

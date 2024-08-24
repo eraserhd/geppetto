@@ -119,7 +119,24 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
     (special-comment "probeopen " ?text)               [::probeopen ?text]
     (special-comment "probeclose" (m/pred str/blank?)) [::probeclose]
     ?text                                              [::comment ?text]))
- 
+
+(defn- line->map [& words]
+  (reduce (fn [line word]
+            (m/match word
+              [:line_number & ?line_number]
+              (assoc line ::line-number ?line_number)
+
+              [::F ?F-value]
+              (assoc line ::F ?F-value)
+
+              [:parameter_setting ?p ?value]
+              (update line ::parameter= #(conj (or % []) [?p ?value]))
+
+              ?word
+              (update line ::words #(conj (or % []) ?word))))
+          {}
+          words))
+
 (defn parse-line [line]
   (->> line
        normalize-line
@@ -134,22 +151,7 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
          :comment                  gcode-comment
          :exists_combo             #(list 'exists %1)
          :integer                  #(Long/parseLong (apply str %&))
-         :line                     (fn [& args]
-                                     (reduce (fn [line word]
-                                               (m/match word
-                                                 [:line_number & ?line_number]
-                                                 (assoc line ::line-number ?line_number)
-                                                        
-                                                 [::F ?F-value]
-                                                 (assoc line ::F ?F-value)
-                                                        
-                                                 [:parameter_setting ?p ?value]
-                                                 (update line ::parameter= #(conj (or % []) [?p ?value]))
-
-                                                 ?word
-                                                 (update line ::words #(conj (or % []) ?word))))
-                                             {}
-                                             args))
+         :line                     line->map
          :mid_line_letter          #(keyword "net.eraserhead.geppetto.gcode" (str/upper-case %1))
          :mid_line_word            vector
          :ordinary_comment         #(vector ::comment (apply str %&))

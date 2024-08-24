@@ -148,7 +148,6 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
     [:line . (m/cata !words) ...]                            (apply line->map !words)
     [:mid_line_letter ?letter]                               (keyword "net.eraserhead.geppetto.gcode" (str/upper-case ?letter))
     [:mid_line_word . (m/cata !args) ...]                    (vec !args)
-    [:ordinary_comment & ?text]                              (vector ::comment (apply str ?text))
     [:ordinary_unary_operation ?op]                          (symbol ?op)
     [:ordinary_unary_combo (m/cata ?op) (m/cata ?arg)]       (m/subst (?op ?arg))
     [:parameter_name & ?parts]                               (apply str ?parts)

@@ -133,7 +133,7 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
   (m/rewrite tree
     [:arc_tangent_combo (m/cata ?a) (m/cata ?b)]             (atan ?a ?b)
     [(m/pred binary-operation?) (m/cata ?a)]                 ?a
-    [(m/pred binary-operation?) (m/cata ?a) ?op (m/cata ?b)] ((m/app symbol ?op) ?a ?b)
+    [(m/pred binary-operation?) (m/cata ?a) ?op (m/cata ?b)] ((m/symbol ?op) ?a ?b)
     (comment-text "debug," ?text)                            [::debug & (m/app find-comment-parameters ?text)]
     (comment-text "log," ?text)                              [::log & (m/app find-comment-parameters ?text)]
     (comment-text "logappend," ?text)                        [::logappend ?text]
@@ -149,7 +149,7 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
     [:line . (m/cata !words) ...]                            (m/app line->map [!words ...])
     [:mid_line_letter ?letter]                               (m/keyword "net.eraserhead.geppetto.gcode" (m/app str/upper-case ?letter))
     [:mid_line_word . (m/cata !args) ...]                    [!args ...]
-    [:ordinary_unary_operation ?op]                          (m/app symbol ?op)
+    [:ordinary_unary_operation ?op]                          (m/symbol ?op)
     [:ordinary_unary_combo (m/cata ?op) (m/cata ?arg)]       (?op ?arg)
     [:parameter_name & (text ?parts)]                        ?parts
     [:parameter_value (m/cata ?name)]                        (parameter ?name)

@@ -107,14 +107,9 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
 
 (defn- gcode-comment [& args]
   (m/match (apply str args)
-    (special-comment "debug," ?text)                   (into [::debug] (find-comment-parameters ?text))
-    (special-comment "log," ?text)                     (into [::log] (find-comment-parameters ?text))
-    (special-comment "logappend," ?text)               [::logappend ?text]
-    (special-comment "logopen," ?text)                 [::logopen ?text]
     (special-comment "logclose" (m/pred str/blank?))   [::logclose]
     (special-comment "msg," ?text)                     [::message ?text]
     (special-comment "print," ?text)                   (into [::print] (find-comment-parameters ?text))
-    (special-comment "probeopen " ?text)               [::probeopen ?text]
     (special-comment "probeclose" (m/pred str/blank?)) [::probeclose]
     ?text                                              [::comment ?text]))
 
@@ -144,6 +139,11 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
     [:arc_tangent_combo (m/cata ?a) (m/cata ?b)]             (m/subst (atan ?a ?b))
     [(m/pred binary-operation?) (m/cata ?a)]                 (m/subst ?a)
     [(m/pred binary-operation?) (m/cata ?a) ?op (m/cata ?b)] (m/subst ((m/app symbol ?op) ?a ?b))
+    [:comment & (text (special-comment "debug," ?text))]     (into [::debug] (find-comment-parameters ?text))
+    [:comment & (text (special-comment "log," ?text))]       (into [::log] (find-comment-parameters ?text))
+    [:comment & (text (special-comment "logappend," ?text))] [::logappend ?text]
+    [:comment & (text (special-comment "logopen," ?text))]   [::logopen ?text]
+    [:comment & (text (special-comment "probeopen " ?text))] [::probeopen ?text]
     [:comment & (text ?text)]                                (gcode-comment ?text)
     [:exists_combo (m/cata ?varname)]                        (m/subst (exists ?varname))
     [:integer & (text ?digits)]                              (Long/parseLong ?digits)

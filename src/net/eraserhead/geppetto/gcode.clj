@@ -100,10 +100,10 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
                [_ _ _ _ "lf" _]                   [::format-decimals 6]
                [_ _ _ _ _ (m/some ?digit)]        [::format-decimals (Long/parseLong ?digit)])))))
 
-(m/defsyntax special-comment [prefix pat]
-  `(m/app (spacey-incasey-prefix-matcher ~prefix) (m/some ~pat)))
 (m/defsyntax text [pat]
   `(m/app (partial apply str) ~pat))
+(m/defsyntax special-comment [prefix pat]
+  `(text (m/app (spacey-incasey-prefix-matcher ~prefix) (m/some ~pat))))
 
 (defn- line->map [& words]
   (reduce (fn [line word]
@@ -131,15 +131,15 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
     [:arc_tangent_combo (m/cata ?a) (m/cata ?b)]             (m/subst (atan ?a ?b))
     [(m/pred binary-operation?) (m/cata ?a)]                 (m/subst ?a)
     [(m/pred binary-operation?) (m/cata ?a) ?op (m/cata ?b)] (m/subst ((m/app symbol ?op) ?a ?b))
-    [:comment & (text (special-comment "debug," ?text))]     (into [::debug] (find-comment-parameters ?text))
-    [:comment & (text (special-comment "log," ?text))]       (into [::log] (find-comment-parameters ?text))
-    [:comment & (text (special-comment "logappend," ?text))] [::logappend ?text]
-    [:comment & (text (special-comment "logclose" (m/pred str/blank?)))]   [::logclose]
-    [:comment & (text (special-comment "logopen," ?text))]   [::logopen ?text]
-    [:comment & (text (special-comment "msg," ?text))]       [::message ?text]
-    [:comment & (text (special-comment "print," ?text))]     (into [::print] (find-comment-parameters ?text))
-    [:comment & (text (special-comment "probeclose" (m/pred str/blank?)))] [::probeclose]
-    [:comment & (text (special-comment "probeopen " ?text))] [::probeopen ?text]
+    [:comment & (special-comment "debug," ?text)]            (into [::debug] (find-comment-parameters ?text))
+    [:comment & (special-comment "log," ?text)]              (into [::log] (find-comment-parameters ?text))
+    [:comment & (special-comment "logappend," ?text)]        [::logappend ?text]
+    [:comment & (special-comment "logclose" (m/pred str/blank?))] [::logclose]
+    [:comment & (special-comment "logopen," ?text)]          [::logopen ?text]
+    [:comment & (special-comment "msg," ?text)]              [::message ?text]
+    [:comment & (special-comment "print," ?text)]            (into [::print] (find-comment-parameters ?text))
+    [:comment & (special-comment "probeclose" (m/pred str/blank?))] [::probeclose]
+    [:comment & (special-comment "probeopen " ?text)]        [::probeopen ?text]
     [:comment & (text ?text)]                                [::comment ?text]
     [:exists_combo (m/cata ?varname)]                        (m/subst (exists ?varname))
     [:integer & (text ?digits)]                              (Long/parseLong ?digits)

@@ -146,7 +146,7 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
     [:comment & (text ?text)]                                (m/subst [::comment ?text])
     [:exists_combo (m/cata ?varname)]                        (m/subst (exists ?varname))
     [:integer & (text ?digits)]                              (m/subst (m/app Long/parseLong ?digits))
-    [:line . (m/cata !words) ...]                            (line->map !words)
+    [:line . (m/cata !words) ...]                            (m/subst (m/app line->map [!words ...]))
     [:mid_line_letter ?letter]                               (m/subst (m/keyword "net.eraserhead.geppetto.gcode" (m/app str/upper-case ?letter)))
     [:mid_line_word . (m/cata !args) ...]                    (m/subst [!args ...])
     [:ordinary_unary_operation ?op]                          (m/subst (m/app symbol ?op))

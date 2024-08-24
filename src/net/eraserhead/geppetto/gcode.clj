@@ -102,6 +102,8 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
 
 (m/defsyntax special-comment [prefix pat]
   `(m/app (spacey-incasey-prefix-matcher ~prefix) (m/some ~pat)))
+(m/defsyntax text [pat]
+  `(m/app (partial apply str) ~pat))
 
 (defn- gcode-comment [& args]
   (m/match (apply str args)
@@ -142,17 +144,17 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
     [:arc_tangent_combo (m/cata ?a) (m/cata ?b)]             (m/subst (atan ?a ?b))
     [(m/pred binary-operation?) (m/cata ?a)]                 (m/subst ?a)
     [(m/pred binary-operation?) (m/cata ?a) ?op (m/cata ?b)] (m/subst ((m/app symbol ?op) ?a ?b))
-    [:comment & (m/app (partial apply str) ?text)]           (gcode-comment ?text)
+    [:comment & (text ?text)]                                (gcode-comment ?text)
     [:exists_combo (m/cata ?varname)]                        (m/subst (exists ?varname))
-    [:integer & (m/app (partial apply str) ?digits)]         (Long/parseLong ?digits)
+    [:integer & (text ?digits)]                              (Long/parseLong ?digits)
     [:line . (m/cata !words) ...]                            (apply line->map !words)
     [:mid_line_letter ?letter]                               (keyword "net.eraserhead.geppetto.gcode" (str/upper-case ?letter))
     [:mid_line_word . (m/cata !args) ...]                    (vec !args)
     [:ordinary_unary_operation ?op]                          (m/subst (m/app symbol ?op))
     [:ordinary_unary_combo (m/cata ?op) (m/cata ?arg)]       (m/subst (?op ?arg))
-    [:parameter_name & (m/app (partial apply str) ?parts)]   ?parts
+    [:parameter_name & (text ?parts)]                        ?parts
     [:parameter_value (m/cata ?name)]                        (m/subst (parameter ?name))
-    [:decimal & (m/app (partial apply str) ?parts)]          (Double/parseDouble ?parts)
+    [:decimal & (text ?parts)]                               (Double/parseDouble ?parts)
     [(m/pred keyword? ?kw) . (m/cata !args) ...]             (m/subst [?kw . !args ...])
     ?other                                                   (m/subst ?other)))
 

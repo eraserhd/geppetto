@@ -105,14 +105,6 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
 (m/defsyntax text [pat]
   `(m/app (partial apply str) ~pat))
 
-(defn- gcode-comment [& args]
-  (m/match (apply str args)
-    (special-comment "logclose" (m/pred str/blank?))   [::logclose]
-    (special-comment "msg," ?text)                     [::message ?text]
-    (special-comment "print," ?text)                   (into [::print] (find-comment-parameters ?text))
-    (special-comment "probeclose" (m/pred str/blank?)) [::probeclose]
-    ?text                                              [::comment ?text]))
-
 (defn- line->map [& words]
   (reduce (fn [line word]
             (m/match word
@@ -142,9 +134,13 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
     [:comment & (text (special-comment "debug," ?text))]     (into [::debug] (find-comment-parameters ?text))
     [:comment & (text (special-comment "log," ?text))]       (into [::log] (find-comment-parameters ?text))
     [:comment & (text (special-comment "logappend," ?text))] [::logappend ?text]
+    [:comment & (text (special-comment "logclose" (m/pred str/blank?)))]   [::logclose]
     [:comment & (text (special-comment "logopen," ?text))]   [::logopen ?text]
+    [:comment & (text (special-comment "msg," ?text))]       [::message ?text]
+    [:comment & (text (special-comment "print," ?text))]     (into [::print] (find-comment-parameters ?text))
+    [:comment & (text (special-comment "probeclose" (m/pred str/blank?)))] [::probeclose]
     [:comment & (text (special-comment "probeopen " ?text))] [::probeopen ?text]
-    [:comment & (text ?text)]                                (gcode-comment ?text)
+    [:comment & (text ?text)]                                [::comment ?text]
     [:exists_combo (m/cata ?varname)]                        (m/subst (exists ?varname))
     [:integer & (text ?digits)]                              (Long/parseLong ?digits)
     [:line . (m/cata !words) ...]                            (apply line->map !words)

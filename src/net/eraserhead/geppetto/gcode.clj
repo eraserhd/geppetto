@@ -63,10 +63,6 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
    "
    :string-ci true))
 
-(defn- binary-operation
-  ([a]      a)
-  ([a op b] (list (symbol op) a b)))
-
 (defn- spacey-incasey-prefix-matcher
   "Is prefix a prefix of full-text, ignoring case and any whitespace in full-text?
 
@@ -137,14 +133,15 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
           {}
           words))
 
+(defn- binary-operation? [kw]
+  (and (keyword? kw)
+       (str/starts-with? (name kw) "binary_operation")))
+
 (defn- fixup [tree]
   (m/match tree
     [:arc_tangent_combo (m/cata ?a) (m/cata ?b)]  (m/subst (atan ?a ?b))
-    [:binary_operation1 . (m/cata !args) ...]     (apply binary-operation !args)
-    [:binary_operation2 . (m/cata !args) ...]     (apply binary-operation !args)
-    [:binary_operation3 . (m/cata !args) ...]     (apply binary-operation !args)
-    [:binary_operation4 . (m/cata !args) ...]     (apply binary-operation !args)
-    [:binary_operation5 . (m/cata !args) ...]     (apply binary-operation !args)
+    [(m/pred binary-operation?) (m/cata ?a)]      (m/subst ?a)
+    [(m/pred binary-operation?) (m/cata ?a) ?op (m/cata ?b)] (m/subst ((m/app symbol ?op) ?a ?b))
     [:comment & ?args]                            (apply gcode-comment ?args)
     [:exists_combo (m/cata ?varname)]             (m/subst (exists ?varname))
     [:integer & ?digits]                          (Long/parseLong (apply str ?digits))

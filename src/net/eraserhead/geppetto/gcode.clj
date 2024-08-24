@@ -138,25 +138,27 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
           words))
 
 (defn- fixup [tree]
-  (insta/transform
-   {:arc_tangent_combo        #(list 'atan %1 %2)
-    :binary_operation1        binary-operation
-    :binary_operation2        binary-operation
-    :binary_operation3        binary-operation
-    :binary_operation4        binary-operation
-    :binary_operation5        binary-operation
-    :comment                  gcode-comment
-    :exists_combo             #(list 'exists %1)
-    :integer                  #(Long/parseLong (apply str %&))
-    :line                     line->map
-    :mid_line_letter          #(keyword "net.eraserhead.geppetto.gcode" (str/upper-case %1))
-    :mid_line_word            vector
-    :ordinary_comment         #(vector ::comment (apply str %&))
-    :ordinary_unary_operation symbol
-    :ordinary_unary_combo     list
-    :parameter_name           #(apply str %&)
-    :parameter_value          #(list 'parameter %1)
-    :decimal                  #(Double/parseDouble (apply str %&))}
-   tree))
+  (m/match tree
+    [:arc_tangent_combo (m/cata ?a) (m/cata ?b)]  (list 'atan ?a ?b)
+    [:binary_operation1 . (m/cata !args) ...]     (apply binary-operation !args)
+    [:binary_operation2 . (m/cata !args) ...]     (apply binary-operation !args)
+    [:binary_operation3 . (m/cata !args) ...]     (apply binary-operation !args)
+    [:binary_operation4 . (m/cata !args) ...]     (apply binary-operation !args)
+    [:binary_operation5 . (m/cata !args) ...]     (apply binary-operation !args)
+    [:comment & ?args]                            (apply gcode-comment ?args)
+    [:exists_combo (m/cata ?varname)]             (list 'exists ?varname)
+    [:integer & ?digits]                          (Long/parseLong (apply str ?digits))
+    [:line . (m/cata !words) ...]                 (apply line->map !words)
+    [:mid_line_letter ?letter]                    (keyword "net.eraserhead.geppetto.gcode" (str/upper-case ?letter))
+    [:mid_line_word . (m/cata !args) ...]         (apply vector !args)
+    [:ordinary_comment & ?text]                   (vector ::comment (apply str ?text))
+    [:ordinary_unary_operation ?op]               (symbol ?op)
+    [:ordinary_unary_combo . (m/cata !args) ...]  (apply list !args)
+    [:parameter_name & ?parts]                    (apply str ?parts)
+    [:parameter_value (m/cata ?param)]            (list 'parameter ?param)
+    [:decimal & ?parts]                           (Double/parseDouble (apply str ?parts))
+
+    [(m/pred keyword? ?kw) . (m/cata !args) ...]  (apply vector ?kw !args)
+    ?other                                        ?other))
 
 (def parse-line (comp fixup parser normalize-line))

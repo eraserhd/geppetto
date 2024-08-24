@@ -137,26 +137,26 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
           {}
           words))
 
-(defn parse-line [line]
-  (->> line
-       normalize-line
-       parser
-       (insta/transform
-        {:arc_tangent_combo        #(list 'atan %1 %2)
-         :binary_operation1        binary-operation
-         :binary_operation2        binary-operation
-         :binary_operation3        binary-operation
-         :binary_operation4        binary-operation
-         :binary_operation5        binary-operation
-         :comment                  gcode-comment
-         :exists_combo             #(list 'exists %1)
-         :integer                  #(Long/parseLong (apply str %&))
-         :line                     line->map
-         :mid_line_letter          #(keyword "net.eraserhead.geppetto.gcode" (str/upper-case %1))
-         :mid_line_word            vector
-         :ordinary_comment         #(vector ::comment (apply str %&))
-         :ordinary_unary_operation symbol
-         :ordinary_unary_combo     list
-         :parameter_name           #(apply str %&)
-         :parameter_value          #(list 'parameter %1)
-         :decimal                  #(Double/parseDouble (apply str %&))})))
+(defn- fixup [tree]
+  (insta/transform
+   {:arc_tangent_combo        #(list 'atan %1 %2)
+    :binary_operation1        binary-operation
+    :binary_operation2        binary-operation
+    :binary_operation3        binary-operation
+    :binary_operation4        binary-operation
+    :binary_operation5        binary-operation
+    :comment                  gcode-comment
+    :exists_combo             #(list 'exists %1)
+    :integer                  #(Long/parseLong (apply str %&))
+    :line                     line->map
+    :mid_line_letter          #(keyword "net.eraserhead.geppetto.gcode" (str/upper-case %1))
+    :mid_line_word            vector
+    :ordinary_comment         #(vector ::comment (apply str %&))
+    :ordinary_unary_operation symbol
+    :ordinary_unary_combo     list
+    :parameter_name           #(apply str %&)
+    :parameter_value          #(list 'parameter %1)
+    :decimal                  #(Double/parseDouble (apply str %&))}
+   tree))
+
+(def parse-line (comp fixup parser normalize-line))

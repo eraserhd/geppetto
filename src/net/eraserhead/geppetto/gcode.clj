@@ -146,10 +146,10 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
      & ?rest}
     ?rest
 
-    {::words [[:line_number . !ln ...] . !rest ...],
+    {::words [[:line_number & ?line-number] & ?words],
      & ?rest}
-    {::line-number [!ln ...],
-     ::words [!rest ...],
+    {::line-number ?line-number,
+     ::words ?words,
      & ?rest}
 
     {::words [!xs ... [::comment & ?comment] . !ys ...],

@@ -164,7 +164,7 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
      ::words [!xs ... . !ys ...]
      & ?rest}
     
-    {::words [!xs ... (m/and ?mode (m/or ::M0)) . !ys ...]
+    {::words [!xs ... (m/and ?mode (m/or ::M0 ::M1 ::M2 ::M30 ::M60)) . !ys ...]
      & ?rest}
     {::stop ?mode,
      ::words [!xs ... . !ys ...],

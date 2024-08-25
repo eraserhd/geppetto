@@ -111,4 +111,6 @@
     "(PROBEOPEN fn.p)"  '{::gcode/words [[::gcode/probeopen "fn.p"]]}
     "(PROBECLOSE)"      '{::gcode/words [[::gcode/probeclose]]}
     "(probEC LOSE)"     '{::gcode/words [[::gcode/probeclose]]}
-    "(probEC LOSEX)"    '{::gcode/words [[::gcode/comment "probEC LOSEX"]]}))
+    "(probEC LOSEX)"    '{::gcode/words [[::gcode/comment "probEC LOSEX"]]}
+
+    "g93"               {::gcode/feed-rate-mode ::gcode/G93}))

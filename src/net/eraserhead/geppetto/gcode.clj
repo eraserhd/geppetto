@@ -11,6 +11,7 @@
   [::O
    ::comment
    ; Set feed rate mode  (G93, G94).
+   ::feed-rate-mode
    ::F
    ::S
    ::T
@@ -141,17 +142,30 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
 (def ^:private fix-map
   (r/repeat
    (r/rewrite
-    {::words [], & ?rest}
+    {::words [],
+     & ?rest}
     ?rest
 
-    {::words [[:line_number . !ln ...] . !rest ...], & ?rest}
+    {::words [[:line_number . !ln ...] . !rest ...],
+     & ?rest}
     {::line-number [!ln ...],
      ::words [!rest ...],
      & ?rest}
 
-    {::words [!xs ... [(m/and ?type (m/or ::F ::S ::T)) ?value] . !ys ...], & ?rest}
+    {::words [!xs ... [(m/and ?type (m/or ::F ::S ::T)) ?value] . !ys ...],
+     & ?rest}
     {?type ?value
      ::words [!xs ... . !ys ...]
+     & ?rest}
+    
+    {::words [!xs ... [::G 93] . !ys ...]
+     & ?rest}
+    {::feed-rate-mode ::G93,
+     & ?rest}
+
+    {::words [!xs ... [::G 94] . !ys ...]
+     & ?rest}
+    {::feed-rate-mode ::G94,
      & ?rest}
 
     {::parameter= (m/or [!parameter=s ...] nil)

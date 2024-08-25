@@ -3,7 +3,8 @@
   (:require
    [clojure.string :as str]
    [instaparse.core :as insta]
-   [meander.epsilon :as m]))
+   [meander.epsilon :as m]
+   [meander.strategy.epsilon :as r]))
 
 (defn normalize-line
   "Removes any spaces, and lowercase letters, not in comments per RS274/NGC D.3.1."
@@ -108,22 +109,28 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
   ([prefix pat]
    `[:comment & (text (m/app (spacey-incasey-prefix-matcher ~prefix) (m/some ~pat)))]))
 
-(defn- line->map [words]
-  (reduce (fn [line word]
-            (m/match word
-              [:line_number & ?line_number]
-              (assoc line ::line-number ?line_number)
+(def ^:private fix-map
+  (r/repeat
+   (r/rewrite
+    {::words [], & ?rest}
+    ?rest
 
-              [::F ?F-value]
-              (assoc line ::F ?F-value)
+    {::words [[:line_number . !ln ...] . !rest ...], & ?rest}
+    {::line-number [!ln ...],
+     ::words [!rest ...],
+     & ?rest}
 
-              [:parameter_setting ?p ?value]
-              (update line ::parameter= #(conj (or % []) [?p ?value]))
+    {::words [!xs ... [::F ?F-value] . !ys ...], & ?rest}
+    {::F ?F-value
+     ::words [!xs ... . !ys ...]
+     & ?rest}
 
-              ?word
-              (update line ::words #(conj (or % []) ?word))))
-          {}
-          words))
+    {::parameter= (m/or [!parameter=s ...] nil)
+     ::words [!xs ... [:parameter_setting ?param ?value] . !ys ...],
+     & ?rest}
+    {::parameter= [!parameter=s ... . [?param ?value]]
+     ::words [!xs ... . !ys ...]
+     & ?rest})))
 
 (defn- binary-operation? [kw]
   (and (keyword? kw)
@@ -146,7 +153,7 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
     [:comment & (text ?text)]                                [::comment ?text]
     [:exists_combo (m/cata ?varname)]                        (exists ?varname)
     [:integer & (text ?digits)]                              (m/app Long/parseLong ?digits)
-    [:line . (m/cata !words) ...]                            (m/app line->map [!words ...])
+    [:line . (m/cata !words) ...]                            (m/app fix-map {::words [!words ...]})
     [:mid_line_letter ?letter]                               (m/keyword "net.eraserhead.geppetto.gcode" (m/app str/upper-case ?letter))
     [:mid_line_word . (m/cata !args) ...]                    [!args ...]
     [:ordinary_unary_operation ?op]                          (m/symbol ?op)

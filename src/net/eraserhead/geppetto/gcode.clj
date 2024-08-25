@@ -158,14 +158,9 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
      ::words [!xs ... . !ys ...]
      & ?rest}
     
-    {::words [!xs ... ::G93 . !ys ...]
+    {::words [!xs ... (m/and ?mode (m/or ::G93 ::G94)) . !ys ...]
      & ?rest}
-    {::feed-rate-mode ::G93,
-     & ?rest}
-
-    {::words [!xs ... ::G94 . !ys ...]
-     & ?rest}
-    {::feed-rate-mode ::G94,
+    {::feed-rate-mode ?mode,
      & ?rest}
 
     {::parameter= (m/or [!parameter=s ...] nil)

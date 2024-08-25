@@ -120,8 +120,8 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
      ::words [!rest ...],
      & ?rest}
 
-    {::words [!xs ... [::F ?F-value] . !ys ...], & ?rest}
-    {::F ?F-value
+    {::words [!xs ... [(m/and ?type (m/or ::F ::S ::T)) ?value] . !ys ...], & ?rest}
+    {?type ?value
      ::words [!xs ... . !ys ...]
      & ?rest}
 

@@ -27,6 +27,7 @@
     "f+0 .4"           {::gcode/F 0.4}
     "g1x4.2f99z6"      {::gcode/F 99, ::gcode/words [[::gcode/G 1] [::gcode/X 4.2] [::gcode/Z 6]]}
     "g1 x4.2 f99 z6"   {::gcode/F 99, ::gcode/words [[::gcode/G 1] [::gcode/X 4.2] [::gcode/Z 6]]}
+    "f2s4t9"           {::gcode/F 2, ::gcode/S 4, ::gcode/T 9}
     "f[4]"             '{::gcode/F 4}
     "f[4 + 7]"         '{::gcode/F (+ 4 7)}
     "f[4 + 7 + 9]"     '{::gcode/F (+ (+ 4 7) 9)}

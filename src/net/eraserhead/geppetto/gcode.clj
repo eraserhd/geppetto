@@ -152,17 +152,17 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
      ::words [!rest ...],
      & ?rest}
 
+    {::words [!xs ... (m/and ?mode (m/or ::G93 ::G94)) . !ys ...]
+     & ?rest}
+    {::feed-rate-mode ?mode,
+     & ?rest}
+
     {::words [!xs ... [(m/and ?type (m/or ::F ::S ::T)) ?value] . !ys ...],
      & ?rest}
     {?type ?value
      ::words [!xs ... . !ys ...]
      & ?rest}
     
-    {::words [!xs ... (m/and ?mode (m/or ::G93 ::G94)) . !ys ...]
-     & ?rest}
-    {::feed-rate-mode ?mode,
-     & ?rest}
-
     {::parameter= (m/or [!parameter=s ...] nil)
      ::words [!xs ... [:parameter_setting ?param ?value] . !ys ...],
      & ?rest}

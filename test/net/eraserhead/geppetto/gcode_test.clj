@@ -47,6 +47,7 @@
     "(Test comment)"   '{::gcode/comment [::gcode/comment "Test comment"]}
     "(MSG,Hello TH)"   '{::gcode/comment [::gcode/message "Hello TH"]}
     "(m S\tg ,Hel TH)" '{::gcode/comment [::gcode/message "Hel TH"]}
+    "(msg,h)(text)"    '{::gcode/comment [::gcode/comment "text"]}
 
     ;; linuxcnc extensions
     "n100.74"          '{::gcode/line-number [100 74]}

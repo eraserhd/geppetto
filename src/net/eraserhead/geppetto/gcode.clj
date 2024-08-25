@@ -158,12 +158,12 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
      ::words [!xs ... . !ys ...]
      & ?rest}
     
-    {::words [!xs ... [::G 93] . !ys ...]
+    {::words [!xs ... ::G93 . !ys ...]
      & ?rest}
     {::feed-rate-mode ::G93,
      & ?rest}
 
-    {::words [!xs ... [::G 94] . !ys ...]
+    {::words [!xs ... ::G94 . !ys ...]
      & ?rest}
     {::feed-rate-mode ::G94,
      & ?rest}
@@ -198,6 +198,7 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
     [:integer & (text ?digits)]                              (m/app Long/parseLong ?digits)
     [:line . (m/cata !words) ...]                            (m/app fix-map {::words [!words ...]})
     [:mid_line_letter ?letter]                               (m/keyword "net.eraserhead.geppetto.gcode" (m/app str/upper-case ?letter))
+    [:mid_line_word [:mid_line_letter (m/or "g" "G")] (m/cata ?n)]    (m/keyword "net.eraserhead.geppetto.gcode" (m/app (partial str "G") ?n))
     [:mid_line_word . (m/cata !args) ...]                    [!args ...]
     [:ordinary_unary_operation ?op]                          (m/symbol ?op)
     [:ordinary_unary_combo (m/cata ?op) (m/cata ?arg)]       (?op ?arg)

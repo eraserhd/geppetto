@@ -44,9 +44,9 @@
     "#22=32.4"         '{::gcode/parameter= [[22 32.4]]}
     "#[1+2]=[3+4]"     '{::gcode/parameter= [[(+ 1 2) (+ 3 4)]]}
     "##2=3"            '{::gcode/parameter= [[(parameter 2) 3]]}
-    "(Test comment)"   '{::gcode/words [[::gcode/comment "Test comment"]]}
-    "(MSG,Hello TH)"   '{::gcode/words [[::gcode/message "Hello TH"]]}
-    "(m S\tg ,Hel TH)" '{::gcode/words [[::gcode/message "Hel TH"]]}
+    "(Test comment)"   '{::gcode/comment [::gcode/comment "Test comment"]}
+    "(MSG,Hello TH)"   '{::gcode/comment [::gcode/message "Hello TH"]}
+    "(m S\tg ,Hel TH)" '{::gcode/comment [::gcode/message "Hel TH"]}
 
     ;; linuxcnc extensions
     "n100.74"          '{::gcode/line-number [100 74]}
@@ -72,46 +72,46 @@
                      (mod 6 2))}
 
     "f[ExiSTS[#<foo>]]" '{::gcode/F (exists "foo")}
-    "(DEBUG,h ello)"    '{::gcode/words [[::gcode/debug [::gcode/text "h ello"]]]}
-    "(print,hi mom)"    '{::gcode/words [[::gcode/print [::gcode/text "hi mom"]]]}
-    "(DEBUG,#23)"       '{::gcode/words [[::gcode/debug [::gcode/parameter 23]]]}
-    "(DEBUG,->#23<-)"   '{::gcode/words [[::gcode/debug
-                                          [::gcode/text "->"]
-                                          [::gcode/parameter 23]
-                                          [::gcode/text "<-"]]]}
-    "(DEBUG,->#<foo><-)"'{::gcode/words [[::gcode/debug
-                                          [::gcode/text "->"]
-                                          [::gcode/parameter "foo"]
-                                          [::gcode/text "<-"]]]}
-    "(DEBUG,#1#<f>#3)"  '{::gcode/words [[::gcode/debug
-                                          [::gcode/parameter 1]
-                                          [::gcode/parameter "f"]
-                                          [::gcode/parameter 3]]]}
-    "(DEBUG,#< f o o >)"'{::gcode/words [[::gcode/debug [::gcode/parameter "foo"]]]}
-    "(DEBUG,%d)"        '{::gcode/words [[::gcode/debug [::gcode/format-decimals 0]]]}
-    "(DEBUG,%f)"        '{::gcode/words [[::gcode/debug [::gcode/format-decimals 4]]]}
-    "(DEBUG,%lf)"       '{::gcode/words [[::gcode/debug [::gcode/format-decimals 6]]]}
-    "(DEBUG,%.7f)"      '{::gcode/words [[::gcode/debug [::gcode/format-decimals 7]]]}
-    "(print,%d#6 hi)"   '{::gcode/words [[::gcode/print
-                                          [::gcode/format-decimals 0]
-                                          [::gcode/parameter 6]
-                                          [::gcode/text " hi"]]]}
-    "(LoG,%d#6 hi)"     '{::gcode/words [[::gcode/log
-                                          [::gcode/format-decimals 0]
-                                          [::gcode/parameter 6]
-                                          [::gcode/text " hi"]]]}
+    "(DEBUG,h ello)"    '{::gcode/comment [::gcode/debug [::gcode/text "h ello"]]}
+    "(print,hi mom)"    '{::gcode/comment [::gcode/print [::gcode/text "hi mom"]]}
+    "(DEBUG,#23)"       '{::gcode/comment [::gcode/debug [::gcode/parameter 23]]}
+    "(DEBUG,->#23<-)"   '{::gcode/comment [::gcode/debug
+                                           [::gcode/text "->"]
+                                           [::gcode/parameter 23]
+                                           [::gcode/text "<-"]]}
+    "(DEBUG,->#<foo><-)"'{::gcode/comment [::gcode/debug
+                                           [::gcode/text "->"]
+                                           [::gcode/parameter "foo"]
+                                           [::gcode/text "<-"]]}
+    "(DEBUG,#1#<f>#3)"  '{::gcode/comment [::gcode/debug
+                                           [::gcode/parameter 1]
+                                           [::gcode/parameter "f"]
+                                           [::gcode/parameter 3]]}
+    "(DEBUG,#< f o o >)"'{::gcode/comment [::gcode/debug [::gcode/parameter "foo"]]}
+    "(DEBUG,%d)"        '{::gcode/comment [::gcode/debug [::gcode/format-decimals 0]]}
+    "(DEBUG,%f)"        '{::gcode/comment [::gcode/debug [::gcode/format-decimals 4]]}
+    "(DEBUG,%lf)"       '{::gcode/comment [::gcode/debug [::gcode/format-decimals 6]]}
+    "(DEBUG,%.7f)"      '{::gcode/comment [::gcode/debug [::gcode/format-decimals 7]]}
+    "(print,%d#6 hi)"   '{::gcode/comment [::gcode/print
+                                           [::gcode/format-decimals 0]
+                                           [::gcode/parameter 6]
+                                           [::gcode/text " hi"]]}
+    "(LoG,%d#6 hi)"     '{::gcode/comment [::gcode/log
+                                           [::gcode/format-decimals 0]
+                                           [::gcode/parameter 6]
+                                           [::gcode/text " hi"]]}
 
-    "(LO GOpEN,fo.txt)" '{::gcode/words [[::gcode/logopen "fo.txt"]]}
-    "(LOGAPPEND,x.log)" '{::gcode/words [[::gcode/logappend "x.log"]]}
-    "(logClose)"        '{::gcode/words [[::gcode/logclose]]}
-    "(logClose )"       '{::gcode/words [[::gcode/logclose]]}
-    "(logCloseX)"       '{::gcode/words [[::gcode/comment "logCloseX"]]}
-    "(log,birch)"       '{::gcode/words [[::gcode/log [::gcode/text "birch"]]]}
+    "(LO GOpEN,fo.txt)" '{::gcode/comment [::gcode/logopen "fo.txt"]}
+    "(LOGAPPEND,x.log)" '{::gcode/comment [::gcode/logappend "x.log"]}
+    "(logClose)"        '{::gcode/comment [::gcode/logclose]}
+    "(logClose )"       '{::gcode/comment [::gcode/logclose]}
+    "(logCloseX)"       '{::gcode/comment [::gcode/comment "logCloseX"]}
+    "(log,birch)"       '{::gcode/comment [::gcode/log [::gcode/text "birch"]]}
 
-    "(PROBEOPEN fn.p)"  '{::gcode/words [[::gcode/probeopen "fn.p"]]}
-    "(PROBECLOSE)"      '{::gcode/words [[::gcode/probeclose]]}
-    "(probEC LOSE)"     '{::gcode/words [[::gcode/probeclose]]}
-    "(probEC LOSEX)"    '{::gcode/words [[::gcode/comment "probEC LOSEX"]]}
+    "(PROBEOPEN fn.p)"  '{::gcode/comment [::gcode/probeopen "fn.p"]}
+    "(PROBECLOSE)"      '{::gcode/comment [::gcode/probeclose]}
+    "(probEC LOSE)"     '{::gcode/comment [::gcode/probeclose]}
+    "(probEC LOSEX)"    '{::gcode/comment [::gcode/comment "probEC LOSEX"]}
 
     "g93"               {::gcode/feed-rate-mode ::gcode/G93}
 

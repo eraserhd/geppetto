@@ -152,6 +152,12 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
      ::words [!rest ...],
      & ?rest}
 
+    {::words [!xs ... [(m/or ::comment ::debug ::message ::print ::probeclose ::probeopen ::logopen ::logappend ::logclose ::log) & _ :as ?comment] . !ys ...],
+     & ?rest}
+    {::words [!xs ... . !ys ...],
+     ::comment ?comment,
+     & ?rest}
+
     {::words [!xs ... (m/and ?mode (m/or ::G93 ::G94)) . !ys ...]
      & ?rest}
     {::feed-rate-mode ?mode,

@@ -10,8 +10,7 @@
   ;; Where does E fit for 3d printers?
   [::O
    ::comment
-   ; Set feed rate mode  (G93, G94).
-   ::feed-rate-mode
+   ::feed-rate-mode ; Set feed rate mode  (G93, G94).
    ::F
    ::S
    ::T
@@ -187,6 +186,16 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
   (and (keyword? kw)
        (str/starts-with? (name kw) "binary_operation")))
 
+(defn- keywordize-g-or-m-code [letter number]
+  (let [rounded     (Math/round (double number))
+        diff        (Math/abs (- number rounded))
+        number-str  (if (< diff 0.05)
+                      (str (long rounded))
+                      (format "%.1f" number))]
+    (keyword
+      "net.eraserhead.geppetto.gcode"
+      (str letter number-str))))
+
 (defn- fixup [tree]
   (m/rewrite tree
     [:arc_tangent_combo (m/cata ?a) (m/cata ?b)]             (atan ?a ?b)
@@ -206,8 +215,8 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
     [:integer & (text ?digits)]                              (m/app Long/parseLong ?digits)
     [:line . (m/cata !words) ...]                            (m/app fix-map {::words [!words ...]})
     [:mid_line_letter ?letter]                               (m/keyword "net.eraserhead.geppetto.gcode" (m/app str/upper-case ?letter))
-    [:mid_line_word [:mid_line_letter (m/or "g" "G")] (m/cata ?n)]    (m/keyword "net.eraserhead.geppetto.gcode" (m/app (partial str "G") ?n))
-    [:mid_line_word [:mid_line_letter (m/or "m" "M")] (m/cata ?n)]    (m/keyword "net.eraserhead.geppetto.gcode" (m/app (partial str "M") ?n))
+    [:mid_line_word [:mid_line_letter (m/or "g" "G")] (m/cata ?n)]    (m/app keywordize-g-or-m-code "G" ?n)
+    [:mid_line_word [:mid_line_letter (m/or "m" "M")] (m/cata ?n)]    (m/app keywordize-g-or-m-code "M" ?n)
     [:mid_line_word . (m/cata !args) ...]                    [!args ...]
     [:ordinary_unary_operation ?op]                          (m/symbol ?op)
     [:ordinary_unary_combo (m/cata ?op) (m/cata ?arg)]       (?op ?arg)

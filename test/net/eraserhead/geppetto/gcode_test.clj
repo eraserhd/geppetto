@@ -115,6 +115,8 @@
     "(probEC LOSEX)"    '{::gcode/comment [::gcode/comment "probEC LOSEX"]}
 
     "g93"               {::gcode/feed-rate-mode ::gcode/G93}
+    "g94"               {::gcode/feed-rate-mode ::gcode/G94}
+    "g93.0"               {::gcode/feed-rate-mode ::gcode/G93}
 
     ;; Stop group
     "m0"                {::gcode/stop ::gcode/M0}
@@ -122,3 +124,4 @@
     "M2"                {::gcode/stop ::gcode/M2}
     "m30"               {::gcode/stop ::gcode/M30}
     "M60"               {::gcode/stop ::gcode/M60}))
+

@@ -152,7 +152,7 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
      ::words [!rest ...],
      & ?rest}
 
-    {::words [!xs ... [(m/or ::comment ::debug ::message ::print ::probeclose ::probeopen ::logopen ::logappend ::logclose ::log) & _ :as ?comment] . !ys ...],
+    {::words [!xs ... [::comment & ?comment] . !ys ...],
      & ?rest}
     {::words [!xs ... . !ys ...],
      ::comment ?comment,
@@ -192,16 +192,16 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
     [:arc_tangent_combo (m/cata ?a) (m/cata ?b)]             (atan ?a ?b)
     [(m/pred binary-operation?) (m/cata ?a)]                 ?a
     [(m/pred binary-operation?) (m/cata ?a) ?op (m/cata ?b)] ((m/symbol ?op) ?a ?b)
-    (comment-text "debug," ?text)                            [::debug & (m/app find-comment-parameters ?text)]
-    (comment-text "log," ?text)                              [::log & (m/app find-comment-parameters ?text)]
-    (comment-text "logappend," ?text)                        [::logappend ?text]
-    (comment-text "logclose")                                [::logclose]
-    (comment-text "logopen," ?text)                          [::logopen ?text]
-    (comment-text "msg," ?text)                              [::message ?text]
-    (comment-text "print," ?text)                            [::print & (m/app find-comment-parameters ?text)]
-    (comment-text "probeclose")                              [::probeclose]
-    (comment-text "probeopen " ?text)                        [::probeopen ?text]
-    [:comment & (text ?text)]                                [::comment ?text]
+    (comment-text "debug," ?text)                            [::comment ::debug & (m/app find-comment-parameters ?text)]
+    (comment-text "log," ?text)                              [::comment ::log & (m/app find-comment-parameters ?text)]
+    (comment-text "logappend," ?text)                        [::comment ::logappend ?text]
+    (comment-text "logclose")                                [::comment ::logclose]
+    (comment-text "logopen," ?text)                          [::comment ::logopen ?text]
+    (comment-text "msg," ?text)                              [::comment ::message ?text]
+    (comment-text "print," ?text)                            [::comment ::print & (m/app find-comment-parameters ?text)]
+    (comment-text "probeclose")                              [::comment ::probeclose]
+    (comment-text "probeopen " ?text)                        [::comment ::probeopen ?text]
+    [:comment & (text ?text)]                                [::comment ::comment ?text]
     [:exists_combo (m/cata ?varname)]                        (exists ?varname)
     [:integer & (text ?digits)]                              (m/app Long/parseLong ?digits)
     [:line . (m/cata !words) ...]                            (m/app fix-map {::words [!words ...]})

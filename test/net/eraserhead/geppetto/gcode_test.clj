@@ -113,4 +113,5 @@
     "(probEC LOSE)"     '{::gcode/words [[::gcode/probeclose]]}
     "(probEC LOSEX)"    '{::gcode/words [[::gcode/comment "probEC LOSEX"]]}
 
-    "g93"               {::gcode/feed-rate-mode ::gcode/G93}))
+    "g93"               {::gcode/feed-rate-mode ::gcode/G93}
+    "m0"                {::gcode/stop ::gcode/M0}))

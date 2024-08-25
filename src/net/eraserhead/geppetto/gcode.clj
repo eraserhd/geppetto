@@ -33,7 +33,7 @@
    ; Set retract mode (G98, G99).
    ; Go to reference location (G28, G30) or change coordinate system data (G10) or set axis offsets (G52, G92, G92.1, G92.2, G94).
    ; Perform motion (G0 to G3, G33, G38.n, G73, G76, G80 to G89), as modified (possibly) by G53.
-   ; Stop (M0, M1, M2, M30, M60).
+   ::stop ; Stop (M0, M1, M2, M30, M60).
    ,])
 
 (defn normalize-line
@@ -155,12 +155,19 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
     {::words [!xs ... (m/and ?mode (m/or ::G93 ::G94)) . !ys ...]
      & ?rest}
     {::feed-rate-mode ?mode,
+     ::words [!xs ... . !ys ...]
      & ?rest}
 
     {::words [!xs ... [(m/and ?type (m/or ::F ::S ::T)) ?value] . !ys ...],
      & ?rest}
     {?type ?value
      ::words [!xs ... . !ys ...]
+     & ?rest}
+    
+    {::words [!xs ... (m/and ?mode (m/or ::M0)) . !ys ...]
+     & ?rest}
+    {::stop ?mode,
+     ::words [!xs ... . !ys ...],
      & ?rest}
     
     {::parameter= (m/or [!parameter=s ...] nil)
@@ -194,6 +201,7 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
     [:line . (m/cata !words) ...]                            (m/app fix-map {::words [!words ...]})
     [:mid_line_letter ?letter]                               (m/keyword "net.eraserhead.geppetto.gcode" (m/app str/upper-case ?letter))
     [:mid_line_word [:mid_line_letter (m/or "g" "G")] (m/cata ?n)]    (m/keyword "net.eraserhead.geppetto.gcode" (m/app (partial str "G") ?n))
+    [:mid_line_word [:mid_line_letter (m/or "m" "M")] (m/cata ?n)]    (m/keyword "net.eraserhead.geppetto.gcode" (m/app (partial str "M") ?n))
     [:mid_line_word . (m/cata !args) ...]                    [!args ...]
     [:ordinary_unary_operation ?op]                          (m/symbol ?op)
     [:ordinary_unary_combo (m/cata ?op) (m/cata ?arg)]       (?op ?arg)

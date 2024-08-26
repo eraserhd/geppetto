@@ -138,50 +138,6 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
   ([prefix pat]
    `[:comment & (text (m/app (spacey-incasey-prefix-matcher ~prefix) (m/some ~pat)))]))
 
-(def ^:private fix-map
-  (r/repeat
-   (r/rewrite
-    {::words [],
-     & ?rest}
-    ?rest
-
-    {::words [[:line_number & ?line-number] & ?words],
-     & ?rest}
-    {::line-number ?line-number,
-     ::words ?words,
-     & ?rest}
-
-    {::words [!xs ... [::comment & ?comment] . !ys ...],
-     & ?rest}
-    {::words [!xs ... . !ys ...],
-     ::comment ?comment,
-     & ?rest}
-
-    {::words [!xs ... (m/and ?mode (m/or ::G93 ::G94)) . !ys ...]
-     & ?rest}
-    {::feed-rate-mode ?mode,
-     ::words [!xs ... . !ys ...]
-     & ?rest}
-
-    {::words [!xs ... [(m/and ?type (m/or ::F ::S ::T)) ?value] . !ys ...],
-     & ?rest}
-    {?type ?value
-     ::words [!xs ... . !ys ...]
-     & ?rest}
-    
-    {::words [!xs ... (m/and ?mode (m/or ::M0 ::M1 ::M2 ::M30 ::M60)) . !ys ...]
-     & ?rest}
-    {::stop ?mode,
-     ::words [!xs ... . !ys ...],
-     & ?rest}
-    
-    {::parameter= (m/or [!parameter=s ...] nil)
-     ::words [!xs ... [:parameter_setting ?param ?value] . !ys ...],
-     & ?rest}
-    {::parameter= [!parameter=s ... . [?param ?value]]
-     ::words [!xs ... . !ys ...]
-     & ?rest})))
-
 (defn- binary-operation? [kw]
   (and (keyword? kw)
        (str/starts-with? (name kw) "binary_operation")))
@@ -201,19 +157,20 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
     [:arc_tangent_combo (m/cata ?a) (m/cata ?b)]             (atan ?a ?b)
     [(m/pred binary-operation?) (m/cata ?a)]                 ?a
     [(m/pred binary-operation?) (m/cata ?a) ?op (m/cata ?b)] ((m/symbol ?op) ?a ?b)
-    (comment-text "debug," ?text)                            [::comment ::debug & (m/app find-comment-parameters ?text)]
-    (comment-text "log," ?text)                              [::comment ::log & (m/app find-comment-parameters ?text)]
-    (comment-text "logappend," ?text)                        [::comment ::logappend ?text]
-    (comment-text "logclose")                                [::comment ::logclose]
-    (comment-text "logopen," ?text)                          [::comment ::logopen ?text]
-    (comment-text "msg," ?text)                              [::comment ::message ?text]
-    (comment-text "print," ?text)                            [::comment ::print & (m/app find-comment-parameters ?text)]
-    (comment-text "probeclose")                              [::comment ::probeclose]
-    (comment-text "probeopen " ?text)                        [::comment ::probeopen ?text]
-    [:comment & (text ?text)]                                [::comment ::comment ?text]
+    (comment-text "debug," ?text)                            [::debug & (m/app find-comment-parameters ?text)]
+    (comment-text "log," ?text)                              [::log & (m/app find-comment-parameters ?text)]
+    (comment-text "logappend," ?text)                        [::logappend ?text]
+    (comment-text "logclose")                                [::logclose]
+    (comment-text "logopen," ?text)                          [::logopen ?text]
+    (comment-text "msg," ?text)                              [::message ?text]
+    (comment-text "print," ?text)                            [::print & (m/app find-comment-parameters ?text)]
+    (comment-text "probeclose")                              [::probeclose]
+    (comment-text "probeopen " ?text)                        [::probeopen ?text]
+    [:comment & (text ?text)]                                [::comment ?text]
     [:exists_combo (m/cata ?varname)]                        (exists ?varname)
     [:integer & (text ?digits)]                              (m/app Long/parseLong ?digits)
-    [:line . (m/cata !words) ...]                            (m/app fix-map {::words [!words ...]})
+    [:line . (m/cata !words) ...]                            [!words ...]
+    [:line_number . (m/cata !num) ...]                       [::line-number [!num ...]]
     [:mid_line_letter ?letter]                               (m/keyword "net.eraserhead.geppetto.gcode" (m/app str/upper-case ?letter))
     [:mid_line_word [:mid_line_letter (m/or "g" "G")] (m/cata ?n)]    (m/app keywordize-g-or-m-code "G" ?n)
     [:mid_line_word [:mid_line_letter (m/or "m" "M")] (m/cata ?n)]    (m/app keywordize-g-or-m-code "M" ?n)
@@ -221,6 +178,7 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
     [:ordinary_unary_operation ?op]                          (m/symbol ?op)
     [:ordinary_unary_combo (m/cata ?op) (m/cata ?arg)]       (?op ?arg)
     [:parameter_name & (text ?parts)]                        ?parts
+    [:parameter_setting (m/cata ?name) (m/cata ?value)]      [::parameter= ?name ?value]
     [:parameter_value (m/cata ?name)]                        (parameter ?name)
     [:decimal & (text ?parts)]                               (m/app Double/parseDouble ?parts)
     [(m/pred keyword? ?kw) . (m/cata !args) ...]             [?kw . !args ...]

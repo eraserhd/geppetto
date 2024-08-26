@@ -114,14 +114,10 @@
     "(probEC LOSE)"     '[[::gcode/probeclose]]
     "(probEC LOSEX)"    '[[::gcode/comment "probEC LOSEX"]]
 
+    ;; G/M-code handling
     "g93"               [::gcode/G93]
     "g94"               [::gcode/G94]
     "g93.0"             [::gcode/G93]
-
-    ;; Stop group
-    "m0"                [::gcode/M0]
-    "m1"                [::gcode/M1]
     "M2"                [::gcode/M2]
-    "m30"               [::gcode/M30]
     "M60"               [::gcode/M60]))
 

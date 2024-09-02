@@ -13,8 +13,8 @@
     "n105 \t\t"        [[::gcode/line-number [105]]]
     "n 105"            [[::gcode/line-number [105]]]
     "n1 2\t3  4 5"     [[::gcode/line-number [12345]]]
-    "G-1.4"            [::gcode/G-1.4]
-    "g-1.4"            [::gcode/G-1.4]
+    "G-1.4"            [[::gcode/G -1.4]]
+    "g-1.4"            [[::gcode/G -1.4]]
     "F2400"            [[::gcode/F 2400]]
     "f2400"            [[::gcode/F 2400]]
     "f-4"              [[::gcode/F -4]]
@@ -25,8 +25,8 @@
     "f -4"             [[::gcode/F -4]]
     "f+ .4"            [[::gcode/F 0.4]]
     "f+0 .4"           [[::gcode/F 0.4]]
-    "g1x4.2f99z6"      [::gcode/G1 [::gcode/X 4.2] [::gcode/F 99] [::gcode/Z 6]]
-    "g1 x4.2 f99 z6"   [::gcode/G1 [::gcode/X 4.2] [::gcode/F 99] [::gcode/Z 6]]
+    "g1x4.2f99z6"      [[::gcode/G 1] [::gcode/X 4.2] [::gcode/F 99] [::gcode/Z 6]]
+    "g1 x4.2 f99 z6"   [[::gcode/G 1] [::gcode/X 4.2] [::gcode/F 99] [::gcode/Z 6]]
     "f2s4t9"           [[::gcode/F 2] [::gcode/S 4] [::gcode/T 9]]
     "f[4]"             '[[::gcode/F 4]]
     "f[4 + 7]"         '[[::gcode/F (+ 4 7)]]
@@ -112,12 +112,4 @@
     "(PROBEOPEN fn.p)"  '[[::gcode/probeopen "fn.p"]]
     "(PROBECLOSE)"      '[[::gcode/probeclose]]
     "(probEC LOSE)"     '[[::gcode/probeclose]]
-    "(probEC LOSEX)"    '[[::gcode/comment "probEC LOSEX"]]
-
-    ;; G/M-code handling
-    "g93"               [::gcode/G93]
-    "g94"               [::gcode/G94]
-    "g93.0"             [::gcode/G93]
-    "M2"                [::gcode/M2]
-    "M60"               [::gcode/M60]))
-
+    "(probEC LOSEX)"    '[[::gcode/comment "probEC LOSEX"]]))

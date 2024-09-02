@@ -1,10 +1,12 @@
 (ns net.eraserhead.geppetto.gcode
   "Implement of g-code parsing per RS274/NGC Interpreter."
   (:require
+   [blancas.kern.core :as k]
    [clojure.string :as str]
    [instaparse.core :as insta]
    [meander.epsilon :as m]
-   [meander.strategy.epsilon :as r]))
+   [meander.strategy.epsilon :as r]
+   [net.eraserhead.geppetto.gcode.parse :as p]))
 
 (def order-of-execution
   ;; Where does E fit for 3d printers?
@@ -184,4 +186,4 @@ decimal                  = [ '+' | '-' ] (( digit {digit} '.' {digit}) | ('.' di
     [(m/pred keyword? ?kw) . (m/cata !args) ...]             [?kw . !args ...]
     ?other                                                   ?other))
 
-(def parse-line (comp fixup parser normalize-line))
+(def parse-line (comp :value #(k/parse p/line %)))

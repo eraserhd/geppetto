@@ -45,9 +45,9 @@
     "#[1+2]=[3+4]"     '[[::gcode/parameter= (+ 1 2) (+ 3 4)]]
     "##2=3"            '[[::gcode/parameter= (parameter 2) 3]]
     "(Test comment)"   '[[::gcode/comment "Test comment"]]
-    "(MSG,Hello TH)"   '[[::gcode/message "Hello TH"]]
-    "(m S\tg ,Hel TH)" '[[::gcode/message "Hel TH"]]
-    "(msg,h)(text)"    '[[::gcode/message "h"] [::gcode/comment "text"]]
+    "(MSG,Hello TH)"   '[[::gcode/msg "Hello TH"]]
+    "(m S\tg ,Hel TH)" '[[::gcode/msg "Hel TH"]]
+    "(msg,h)(text)"    '[[::gcode/msg "h"] [::gcode/comment "text"]]
 
     ;; linuxcnc extensions
     "n100.74"          '[[::gcode/line-number [100 74]]]

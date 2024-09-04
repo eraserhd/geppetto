@@ -109,7 +109,7 @@
   (>>= (>> (sym \#) parameter-index)
        #(return (list 'parameter %))))
 
-(def unary-combo
+(def ordinary-unary-combo
   (bind [operator (<|> (token "abs")
                        (token "acos")
                        (token "asin")
@@ -124,6 +124,22 @@
                        (token "tan"))
          operand expression]
     (return (list operator operand))))
+
+(def exists-combo
+  (bind [_ (token "exists[#")
+         i parameter-index
+         _ (sym \])]
+    (return (list 'exists i))))
+
+(def arc-tangent-combo
+  (bind [_ (token "atan")
+         a expression
+         _ (sym \/)
+         b expression]
+    (return (list 'atan a b))))
+
+(def unary-combo
+  (<|> ordinary-unary-combo arc-tangent-combo exists-combo))
 
 (def real-value
   (<|> decimal integer expression parameter-value unary-combo))
@@ -181,9 +197,15 @@
              (>>= (<< text (sym \)))
                   #(return [:net.eraserhead.geppetto.gcode/comment %]))))))
 
+(def parameter-setting
+  (bind [_ (sym \#)
+         i parameter-index
+         _ (sym \=)
+         v real-value]
+    (return [:net.eraserhead.geppetto.gcode/parameter= i v])))
+
 (def segment
-  (<|> mid-line-word
-       inline-comment)) ; | comment | ...
+  (<|> mid-line-word inline-comment parameter-setting))
 
 (def line
   (bind [block-delete (optional (sym \/))

@@ -57,10 +57,8 @@
 (def binary-operation1
   (bind [lhs   (fwd real-value)
          rhses (many (>> (token "**") (fwd real-value)))]
-    (return (apply (fn rewrite*
-                     ([a] a)
-                     ([a & more] (list '** a (apply rewrite* more))))
-                   (cons lhs rhses)))))
+    (return (reduce #(list '** %2 %1)
+                    (reverse (cons lhs rhses))))))
 
 (def binary-operation2
   (left-associative-binary-operation

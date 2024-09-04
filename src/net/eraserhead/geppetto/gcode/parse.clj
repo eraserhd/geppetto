@@ -12,9 +12,12 @@
 (defn sym [c]
   (skip-ws (k/sym- c)))
 
-(defn token [s]
-  (<:> (>>= (apply <*> (map sym s))
-            #(return (symbol (apply str %))))))
+(defn token
+  ([s]
+   (<:> (>>= (apply <*> (map sym s))
+             #(return (symbol (apply str %))))))
+  ([s & more]
+   (apply <|> (map token (cons s more)))))
 
 (def digit
   (skip-ws k/digit))
@@ -63,32 +66,22 @@
 (def binary-operation2
   (left-associative-binary-operation
     binary-operation1
-    (<|> (token "/")
-         (token "mod")
-         (token "*"))))
+    (token "/" "mod" "*")))
 
 (def binary-operation3
   (left-associative-binary-operation
     binary-operation2
-    (<|> (token "+")
-         (token "-"))))
+    (token "+" "-")))
 
 (def binary-operation4
   (left-associative-binary-operation
     binary-operation3
-    (<|> (token "eq")
-         (token "ne")
-         (token "gt")
-         (token "ge")
-         (token "lt")
-         (token "le"))))
+    (token "eq" "ne" "gt" "ge" "lt" "le")))
 
 (def binary-operation5
   (left-associative-binary-operation
     binary-operation4
-    (<|> (token "and")
-         (token "xor")
-         (token "or"))))
+    (token "and" "xor" "or")))
 
 (def expression
   (k/between (sym \[) (sym \]) binary-operation5))
@@ -107,18 +100,8 @@
        #(return (list 'parameter %))))
 
 (def ordinary-unary-combo
-  (bind [operator (<|> (token "abs")
-                       (token "acos")
-                       (token "asin")
-                       (token "cos")
-                       (token "exp")
-                       (token "fix")
-                       (token "fup")
-                       (token "ln")
-                       (token "round")
-                       (token "sin")
-                       (token "sqrt")
-                       (token "tan"))
+  (bind [operator (token "abs" "acos" "asin" "cos" "exp" "fix" "fup" "ln" "round"
+                         "sin" "sqrt" "tan")
          operand expression]
     (return (list operator operand))))
 

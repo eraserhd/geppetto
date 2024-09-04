@@ -1,7 +1,8 @@
 (ns net.eraserhead.geppetto.gcode.parse
- (:require
-  [blancas.kern.core :as k :refer [<:> <|> <*> <$> << >> >>= bind return many many1 optional skip]]
-  [clojure.string :as str]))
+  (:require
+   [blancas.kern.core :as k :refer [<:> <|> <*> <$> << >> >>= bind return many many1 optional skip fwd]]
+   [clojure.string :as str]
+   [meander.epsilon :as m]))
 
 ;; Each parser skips trailing whitespace and NOT leading whitespace, so that we
 ;; do not consume anything on failure.
@@ -13,6 +14,10 @@
 
 (defn sym [c]
   (skip-ws (k/sym- c)))
+
+(defn token [s]
+  (<:> (>>= (apply <*> (map sym s))
+            #(return (symbol (apply str %))))))
 
 (def digit
   (skip-ws k/digit))
@@ -39,8 +44,60 @@
                                                           [a b]
                                                           [a])])))
 
+(declare real-value)
+
+(defn left-associative-binary-operation [term op]
+  (bind [lhs term
+         rhses (many (<*> op term))]
+    (return (loop [lhs   lhs
+                   rhses rhses]
+              (if-some [[[op rhs] & rhses'] (seq rhses)]
+                (recur (list op lhs rhs) rhses')
+                lhs)))))
+
+(def binary-operation1
+  (bind [lhs   (fwd real-value)
+         rhses (many (>> (token "**") (fwd real-value)))]
+    (return (apply (fn rewrite*
+                     ([a] a)
+                     ([a & more] (list '** a (apply rewrite* more))))
+                   (cons lhs rhses)))))
+
+(def binary-operation2
+  (left-associative-binary-operation
+    binary-operation1
+    (<|> (token "/")
+         (token "mod")
+         (token "*"))))
+
+(def binary-operation3
+  (left-associative-binary-operation
+    binary-operation2
+    (<|> (token "+")
+         (token "-"))))
+
+(def binary-operation4
+  (left-associative-binary-operation
+    binary-operation3
+    (<|> (token "eq")
+         (token "ne")
+         (token "gt")
+         (token "ge")
+         (token "lt")
+         (token "le"))))
+
+(def binary-operation5
+  (left-associative-binary-operation
+    binary-operation4
+    (<|> (token "and")
+         (token "xor")
+         (token "or"))))
+
+(def expression
+  (k/between (sym \[) (sym \]) binary-operation5))
+
 (def real-value
-  (<|> decimal integer))
+  (<|> decimal integer expression))
 
 (def normal-letters "ABCDFGHIJKLMPQRSTUVWXYZ")
 (defn normal-letter [c]

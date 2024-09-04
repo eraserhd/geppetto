@@ -96,8 +96,21 @@
 (def expression
   (k/between (sym \[) (sym \]) binary-operation5))
 
+(def parameter-name-char
+  (skip-ws (<$> #(Character/toLowerCase %) (k/satisfy (complement #{\( \) \>})))))
+(def parameter-name
+  (bind [_  (sym \<)
+         cs (many parameter-name-char)
+         _  (sym \>)]
+    (return (apply str cs))))
+(def parameter-index
+  (<|> (fwd real-value) parameter-name))
+(def parameter-value
+  (>>= (>> (sym \#) parameter-index)
+       #(return (list 'parameter %))))
+
 (def real-value
-  (<|> decimal integer expression))
+  (<|> decimal integer expression parameter-value))
 
 (def normal-letters "ABCDFGHIJKLMPQRSTUVWXYZ")
 (defn normal-letter [c]
@@ -120,9 +133,6 @@
                                              _    (sym \))]
                                         (return (into [kw] body))))))
 
-        name-char        (skip-ws (k/satisfy (complement #{\> \( \)})))
-        name             (<$> (partial apply str) (many name-char))
-        parameter-name   (k/between (sym \<) (sym \>) name)
         parameter-value  (>>= (>> (k/sym- \#) (<|> real-value parameter-name))
                               #(return [:net.eraserhead.geppetto.gcode/parameter %]))
 

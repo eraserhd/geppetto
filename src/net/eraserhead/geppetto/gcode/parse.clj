@@ -109,8 +109,24 @@
   (>>= (>> (sym \#) parameter-index)
        #(return (list 'parameter %))))
 
+(def unary-combo
+  (bind [operator (<|> (token "abs")
+                       (token "acos")
+                       (token "asin")
+                       (token "cos")
+                       (token "exp")
+                       (token "fix")
+                       (token "fup")
+                       (token "ln")
+                       (token "round")
+                       (token "sin")
+                       (token "sqrt")
+                       (token "tan"))
+         operand expression]
+    (return (list operator operand))))
+
 (def real-value
-  (<|> decimal integer expression parameter-value))
+  (<|> decimal integer expression parameter-value unary-combo))
 
 (def normal-letters "ABCDFGHIJKLMPQRSTUVWXYZ")
 (defn normal-letter [c]

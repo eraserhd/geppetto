@@ -4,9 +4,6 @@
    [clojure.string :as str]
    [meander.epsilon :as m]))
 
-;; Each parser skips trailing whitespace and NOT leading whitespace, so that we
-;; do not consume anything on failure.
-
 (def ws (<|> k/space k/tab))
 
 (defn skip-ws [p]
@@ -152,6 +149,17 @@
 (def mid-line-word
   (<*> mid-line-letter real-value))
 
+(def format-specifier
+  (>>= (>> (k/sym- \%)
+           (<|> (>> (sym \l) (sym \f) (return 6))
+                (>> (sym \d) (return 0))
+                (>> (sym \f) (return 4))
+                (bind [_ (sym \.)
+                       d digit
+                       _ (sym \f)]
+                  (return (Character/digit d 10)))))
+       #(return [:net.eraserhead.geppetto.gcode/format-decimals %])))
+
 (def inline-comment
   (let [text             (>>= (many (k/satisfy (complement #{\( \)})))
                               #(return (apply str %)))
@@ -167,16 +175,6 @@
 
         parameter-value  (>>= (>> (k/sym- \#) (<|> real-value parameter-name))
                               #(return [:net.eraserhead.geppetto.gcode/parameter %]))
-
-        format-specifier (>>= (>> (sym \%)
-                                  (<|> (>> (sym \l) (k/sym- \f) (return 6))
-                                       (>> (k/sym- \d) (return 0))
-                                       (>> (k/sym- \f) (return 4))
-                                       (bind [_ (sym \.)
-                                              d digit
-                                              _ (k/sym- \f)]
-                                         (return (Character/digit d 10)))))
-                              #(return [:net.eraserhead.geppetto.gcode/format-decimals %]))
 
         non-var-text    (>>= (many1 (k/satisfy (complement #{\# \% \( \)})))
                              #(return [:net.eraserhead.geppetto.gcode/text (apply str %)]))

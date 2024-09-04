@@ -49,11 +49,10 @@
 (defn left-associative-binary-operation [term op]
   (bind [lhs term
          rhses (many (<*> op term))]
-    (return (loop [lhs   lhs
-                   rhses rhses]
-              (if-some [[[op rhs] & rhses'] (seq rhses)]
-                (recur (list op lhs rhs) rhses')
-                lhs)))))
+    (return (reduce (fn [lhs [op rhs]]
+                      (list op lhs rhs))
+                    lhs
+                    rhses))))
 
 (def binary-operation1
   (bind [lhs   (fwd real-value)

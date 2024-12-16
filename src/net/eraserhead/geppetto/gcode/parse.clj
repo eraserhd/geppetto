@@ -19,8 +19,7 @@
   ([s & more]
    (apply <|> (map token (cons s more)))))
 
-(def digit
-  (skip-ws k/digit))
+(def digit (skip-ws k/digit))
 
 (def decimal
   (<:> (bind [sign   (<|> (sym \+) (sym \-) (return \+))

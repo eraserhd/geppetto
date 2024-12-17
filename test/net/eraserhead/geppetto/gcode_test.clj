@@ -131,4 +131,5 @@
     "o111 else"         '[::gcode/else 111]
     "o112 endif"        '[::gcode/endif 112]
     "o113 repeat [5]"   '[::gcode/repeat 113 5]
-    "o114 endrepeat"    '[::gcode/endrepeat 114]))
+    "o114 endrepeat"    '[::gcode/endrepeat 114]
+    "o[#101+2] call"    '[::gcode/call (+ (parameter 101) 2) []]))

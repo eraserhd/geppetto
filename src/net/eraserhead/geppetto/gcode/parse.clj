@@ -188,7 +188,7 @@
   (bind [letters (k/between (sym \<)
                             (sym \>)
                             (many (k/satisfy #(not= % \>))))]
-    (return (apply str letters))))
+    (return (str/lower-case (apply str letters)))))
 
 (def o-code
   (bind [o (>> (sym \o) (<|> real-value o-filename))

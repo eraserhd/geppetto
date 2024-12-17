@@ -135,4 +135,5 @@
     "o[#101+2] call"    '[::gcode/call (+ (parameter 101) 2) []]
 
     ; 9. Calling Files
-    "o<myfile> call"    '[::gcode/call "myfile" []]))
+    "o<myfile> call"    '[::gcode/call "myfile" []]
+    "o<MyFile> call"    '[::gcode/call "myfile" []]))

@@ -136,4 +136,7 @@
 
     ; 9. Calling Files
     "o<myfile> call"    '[::gcode/call "myfile" []]
-    "o<MyFile> call"    '[::gcode/call "myfile" []]))
+    "o<MyFile> call"    '[::gcode/call "myfile" []]
+    "o<myfile> sub"     '[::gcode/sub "myfile"]
+    "o<myfile> endsub"  '[::gcode/endsub "myfile"]
+    "o<myfile> return"  '[::gcode/return "myfile"]))

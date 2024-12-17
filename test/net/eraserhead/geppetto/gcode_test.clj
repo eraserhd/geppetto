@@ -125,4 +125,5 @@
     "o105 endwhile"     '[::gcode/endwhile 105]
     "o106 do"           '[::gcode/do 106]
     "o107 break"        '[::gcode/break 107]
-    "o108 continue"     '[::gcode/continue 108]))
+    "o108 continue"     '[::gcode/continue 108]
+    "o109 if [#31 EQ 3]"'[::gcode/if 109 (eq (parameter 31) 3)]))

@@ -184,12 +184,22 @@
 (def segment
   (<|> mid-line-word inline-comment parameter-setting))
 
+(def o-code
+  (bind [_ (sym \o)
+         o real-value
+         _ (many ws)
+         t (<|> (token "sub")
+                (token "endsub")
+                (token "return"))
+         _ (many ws)]
+    (return [(keyword "net.eraserhead.geppetto.gcode" (name t)) o])))
+
 (def line
   (bind [block-delete (optional (sym \/))
          line-number  (optional line-number)
-         segments     (many segment)
+         main-part    (<|> o-code (many segment))
          _            (many ws)]
     (return (vec (concat
                   (if block-delete [:net.eraserhead.geppetto.gcode/block-delete])
                   (if line-number  [line-number])
-                  segments)))))
+                  main-part)))))

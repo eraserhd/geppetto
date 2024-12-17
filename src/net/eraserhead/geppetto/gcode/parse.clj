@@ -200,7 +200,9 @@
                          (<*> (token "if") real-value)
                          (<*> (token "elseif") real-value)
                          (<*> (token "else"))
-                         (<*> (token "endif")))
+                         (<*> (token "endif"))
+                         (<*> (token "repeat") real-value)
+                         (<*> (token "endrepeat")))
          _ (many ws)]
     (return (into
              [(keyword "net.eraserhead.geppetto.gcode" (name t)) o]

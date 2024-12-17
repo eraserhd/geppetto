@@ -129,4 +129,6 @@
     "o109 if [#31 EQ 3]"'[::gcode/if 109 (eq (parameter 31) 3)]
     "o110 elseif [#2 LT 2]"'[::gcode/elseif 110 (lt (parameter 2) 2)]
     "o111 else"         '[::gcode/else 111]
-    "o112 endif"        '[::gcode/endif 112]))
+    "o112 endif"        '[::gcode/endif 112]
+    "o113 repeat [5]"   '[::gcode/repeat 113 5]
+    "o114 endrepeat"    '[::gcode/endrepeat 114]))

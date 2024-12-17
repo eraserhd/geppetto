@@ -187,8 +187,8 @@
 (def o-code
   (bind [o (>> (sym \o) (<|> real-value parameter-name))
          [t & args] (<|> (<*> (token "sub"))
-                         (<*> (token "endsub"))
-                         (<*> (token "return"))
+                         (<*> (token "endsub") (optional real-value))
+                         (<*> (token "return") (optional real-value))
                          (<*> (token "call") (many real-value))
                          (<*> (token "while") real-value)
                          (<*> (token "endwhile"))

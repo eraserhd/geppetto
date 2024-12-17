@@ -117,10 +117,10 @@
     "(probEC LOSEX)"    '[[::gcode/comment "probEC LOSEX"]]
 
     "o100 sub"          '[::gcode/sub 100]
-    "o101 endsub"       '[::gcode/endsub 101]
+    "o101 endsub"       '[::gcode/endsub 101 nil]
     "o102 call [1] [3]" '[::gcode/call 102 [1 3]]
     "o102 call #2 [2+4]"'[::gcode/call 102 [(parameter 2) (+ 2 4)]]
-    "o103 return"       '[::gcode/return 103]
+    "o103 return"       '[::gcode/return 103 nil]
     "o104 while [#1 LT 10]" '[::gcode/while 104 (lt (parameter 1) 10)]
     "o105 endwhile"     '[::gcode/endwhile 105]
     "o106 do"           '[::gcode/do 106]
@@ -138,5 +138,9 @@
     "o<myfile> call"    '[::gcode/call "myfile" []]
     "o<MyFile> call"    '[::gcode/call "myfile" []]
     "o<myfile> sub"     '[::gcode/sub "myfile"]
-    "o<myfile> endsub"  '[::gcode/endsub "myfile"]
-    "o<myfile> return"  '[::gcode/return "myfile"]))
+    "o<myfile> endsub"  '[::gcode/endsub "myfile" nil]
+    "o<myfile> return"  '[::gcode/return "myfile" nil]
+
+    ; 10. Subroutine return values
+    "o123 return [#2 * 5]" '[::gcode/return 123 (* (parameter 2) 5)]
+    "o123 endsub [3 * 4]"  '[::gcode/endsub 123 (* 3 4)]))

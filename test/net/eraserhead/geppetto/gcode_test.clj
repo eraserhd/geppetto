@@ -122,4 +122,7 @@
     "o102 call #2 [2+4]"'[::gcode/call 102 [(parameter 2) (+ 2 4)]]
     "o103 return"       '[::gcode/return 103]
     "o104 while [#1 LT 10]" '[::gcode/while 104 (lt (parameter 1) 10)]
-    "o105 endwhile"     '[::gcode/endwhile 105]))
+    "o105 endwhile"     '[::gcode/endwhile 105]
+    "o106 do"           '[::gcode/do 106]
+    "o107 break"        '[::gcode/break 107]
+    "o108 continue"     '[::gcode/continue 108]))

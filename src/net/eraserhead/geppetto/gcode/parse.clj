@@ -192,7 +192,8 @@
                          (<*> (token "endsub"))
                          (<*> (token "return"))
                          (<*> (token "call") (many real-value))
-                         (<*> (token "while") real-value))
+                         (<*> (token "while") real-value)
+                         (<*> (token "endwhile")))
          _ (many ws)]
     (return (into
              [(keyword "net.eraserhead.geppetto.gcode" (name t)) o]

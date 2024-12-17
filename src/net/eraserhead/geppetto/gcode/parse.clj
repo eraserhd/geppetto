@@ -184,14 +184,8 @@
 (def segment
   (<|> mid-line-word inline-comment parameter-setting))
 
-(def o-filename
-  (bind [letters (k/between (sym \<)
-                            (sym \>)
-                            (many (k/satisfy #(not= % \>))))]
-    (return (str/lower-case (apply str letters)))))
-
 (def o-code
-  (bind [o (>> (sym \o) (<|> real-value o-filename))
+  (bind [o (>> (sym \o) (<|> real-value parameter-name))
          [t & args] (<|> (<*> (token "sub"))
                          (<*> (token "endsub"))
                          (<*> (token "return"))

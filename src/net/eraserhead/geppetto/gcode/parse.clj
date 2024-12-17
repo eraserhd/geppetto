@@ -197,7 +197,8 @@
                          (<*> (token "do"))
                          (<*> (token "break"))
                          (<*> (token "continue"))
-                         (<*> (token "if") real-value))
+                         (<*> (token "if") real-value)
+                         (<*> (token "elseif") real-value))
          _ (many ws)]
     (return (into
              [(keyword "net.eraserhead.geppetto.gcode" (name t)) o]

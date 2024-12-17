@@ -184,10 +184,14 @@
 (def segment
   (<|> mid-line-word inline-comment parameter-setting))
 
+(def o-filename
+  (bind [letters (k/between (sym \<)
+                            (sym \>)
+                            (many (k/satisfy #(not= % \>))))]
+    (return (apply str letters))))
+
 (def o-code
-  (bind [_ (sym \o)
-         o real-value
-         _ (many ws)
+  (bind [o (>> (sym \o) (<|> real-value o-filename))
          [t & args] (<|> (<*> (token "sub"))
                          (<*> (token "endsub"))
                          (<*> (token "return"))
@@ -202,8 +206,7 @@
                          (<*> (token "else"))
                          (<*> (token "endif"))
                          (<*> (token "repeat") real-value)
-                         (<*> (token "endrepeat")))
-         _ (many ws)]
+                         (<*> (token "endrepeat")))]
     (return (into
              [(keyword "net.eraserhead.geppetto.gcode" (name t)) o]
              args))))

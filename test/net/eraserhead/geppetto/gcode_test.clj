@@ -118,7 +118,8 @@
 
     "o100 sub"          '[::gcode/sub 100]
     "o101 endsub"       '[::gcode/endsub 101]
-    ;"o102 call"         '[::gcode/call 102]
+    "o102 call [1] [3]" '[::gcode/call 102 [1 3]]
+    "o102 call #2 [2+4]"'[::gcode/call 102 [(parameter 2) (+ 2 4)]]
     "o103 return"       '[::gcode/return 103]))
     ;"o104 if [#2 GT 5]" '[::gcode/if 104]
     ;"o105 endif"        '[::gcode/endif 105]))

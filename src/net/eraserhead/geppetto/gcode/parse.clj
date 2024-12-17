@@ -188,11 +188,14 @@
   (bind [_ (sym \o)
          o real-value
          _ (many ws)
-         t (<|> (token "sub")
-                (token "endsub")
-                (token "return"))
+         [t & args] (<|> (<*> (token "sub"))
+                         (<*> (token "endsub"))
+                         (<*> (token "return"))
+                         (<*> (token "call") (many real-value)))
          _ (many ws)]
-    (return [(keyword "net.eraserhead.geppetto.gcode" (name t)) o])))
+    (return (into
+             [(keyword "net.eraserhead.geppetto.gcode" (name t)) o]
+             args))))
 
 (def line
   (bind [block-delete (optional (sym \/))

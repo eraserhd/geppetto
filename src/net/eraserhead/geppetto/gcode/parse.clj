@@ -120,9 +120,15 @@
 (def real-value
   (<|> decimal integer expression parameter-value unary-combo))
 
-(def normal-letters "ABCDFGHIJKLMPQRSTUVWXYZ")
+(def normal-letters "ABCDFGHIJKLMPQRSTUVWXYZ@^")
 (defn normal-letter [c]
-  (>> (sym c) (return (keyword "net.eraserhead.geppetto.gcode" (str c)))))
+  (bind [ch (sym c)]
+    (return
+     (case ch
+       (\@) :net.eraserhead.geppetto.gcode/polar-distance
+       (\^) :net.eraserhead.geppetto.gcode/polar-angle
+       (keyword "net.eraserhead.geppetto.gcode" (str c))))))
+
 (def mid-line-letter
   (apply <|> (map normal-letter normal-letters)))
 (def mid-line-word

@@ -167,7 +167,7 @@
                                    format-specifier
                                    non-var-text))]
 
-    (>> (k/sym- \()
+    (>> (sym \()
         (<|> (special "debug," text-and-vars)
              (special "log," text-and-vars)
              (special "logappend," (<$> vector text))

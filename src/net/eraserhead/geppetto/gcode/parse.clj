@@ -214,8 +214,8 @@
 (def line
   (bind [block-delete (optional (sym \/))
          line-number  (optional line-number)
-         main-part    (<|> o-code (many segment))
-         _            (many ws)]
+         main-part    (<|> (<< o-code (many ws))
+                           (<< (many segment) (many ws)))]
     (return (vec (concat
                   (if block-delete [:net.eraserhead.geppetto.gcode/block-delete])
                   (if line-number  [line-number])

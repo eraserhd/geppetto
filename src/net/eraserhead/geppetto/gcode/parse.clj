@@ -148,7 +148,7 @@
 (def inline-comment
   (let [text             (>>= (many (k/satisfy (complement #{\( \)})))
                               #(return (apply str %)))
-        special          (fn [prefix p]
+        active-comment   (fn [prefix p]
                            (let [kw-name (if (str/ends-with? prefix ",")
                                            (subs prefix 0 (dec (count prefix)))
                                            prefix)
@@ -168,15 +168,15 @@
                                    non-var-text))]
 
     (>> (sym \()
-        (<|> (special "debug," text-and-vars)
-             (special "log," text-and-vars)
-             (special "logappend," (<$> vector text))
-             (special "logopen," (<$> vector text))
-             (special "logclose" (return nil))
-             (special "msg," (<$> vector text))
-             (special "print," text-and-vars)
-             (special "probeopen" (>> (k/skip-many1 ws) (<$> vector text)))
-             (special "probeclose" (return nil))
+        (<|> (active-comment "debug," text-and-vars)
+             (active-comment "log," text-and-vars)
+             (active-comment "logappend," (<$> vector text))
+             (active-comment "logopen," (<$> vector text))
+             (active-comment "logclose" (return nil))
+             (active-comment "msg," (<$> vector text))
+             (active-comment "print," text-and-vars)
+             (active-comment "probeopen" (>> (k/skip-many1 ws) (<$> vector text)))
+             (active-comment "probeclose" (return nil))
              (>>= (<< text (sym \)))
                   #(return [:net.eraserhead.geppetto.gcode/comment %]))))))
 

@@ -211,11 +211,20 @@
              [(keyword "net.eraserhead.geppetto.gcode" (name t)) o]
              args))))
 
+(def semi-comment
+  (bind [_    (sym \;)
+         text (many k/any-char)]
+    (return [:net.eraserhead.geppetto.gcode/comment (apply str text)])))
+
 (def line
   (bind [block-delete (optional (sym \/))
          line-number  (optional line-number)
          main-part    (<|> (<< o-code (many ws))
-                           (<< (many segment) (many ws)))]
+                           (bind [segments (many segment)
+                                  tail     (<|> semi-comment
+                                                (>> (many ws) (return nil)))]
+                             (return (cond-> segments
+                                       tail (into [tail])))))]
     (return (vec (concat
                   (if block-delete [:net.eraserhead.geppetto.gcode/block-delete])
                   (if line-number  [line-number])

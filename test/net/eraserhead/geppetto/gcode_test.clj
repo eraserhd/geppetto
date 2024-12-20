@@ -108,8 +108,9 @@
    "x1 (Test comment) y2" '[[::gcode/X 1] [::gcode/comment "Test comment"] [::gcode/Y 2]]
    "x1y2 (Test comment)"  '[[::gcode/X 1] [::gcode/Y 2] [::gcode/comment "Test comment"]]
    "x1 (in; comment)"     '[[::gcode/X 1] [::gcode/comment "in; comment"]]
-   ;"x1 ;Test comment"     '[[::gcode/X 1] [::gcode/comment "Test comment"]]
-   ;";Test comment"        '[[::gcode/comment "Test comment"]]
+   "x1 ;Test comment"     '[[::gcode/X 1] [::gcode/comment "Test comment"]]
+   "x1;Test comment"      '[[::gcode/X 1] [::gcode/comment "Test comment"]]
+   ";Test comment"        '[[::gcode/comment "Test comment"]]
 
    "(MSG,Hello TH)"   '[[::gcode/msg "Hello TH"]]
    "(m S\tg ,Hel TH)" '[[::gcode/msg "Hel TH"]]

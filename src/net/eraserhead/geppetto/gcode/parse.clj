@@ -224,7 +224,8 @@
                                   tail     (<|> semi-comment
                                                 (>> (many ws) (return nil)))]
                              (return (cond-> segments
-                                       tail (into [tail])))))]
+                                       tail (into [tail])))))
+         _            k/eof]
     (return (vec (concat
                   (if block-delete [:net.eraserhead.geppetto.gcode/block-delete])
                   (if line-number  [line-number])

@@ -1,5 +1,10 @@
 (ns net.eraserhead.geppetto.expression.builtins)
 
+(defn **
+  "Raise a to power b."
+  [a b]
+  (Math/pow a b))
+
 (defn eq
   "Determine if two numbers are equal.
 

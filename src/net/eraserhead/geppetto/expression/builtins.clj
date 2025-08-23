@@ -1,14 +1,14 @@
 (ns net.eraserhead.geppetto.expression.builtins
   (:refer-clojure :exclude [and or]))
 
+;; 6. Binary Operators
+
 (defn **
   "Raise a to power b."
   [a b]
   (Math/pow a b))
 
-;; * MOD
-
-;; + -
+;; * MOD + -  -- just imported: same as in Clojure
 
 (defn eq
   "Determine if two numbers are equal.
@@ -119,3 +119,22 @@
     [true  false] 1
     [false true ] 1
     [true  true ] 0))
+
+;; 8. Functions
+
+(defn atan [a b] (Math/atan2 a b))
+; abs - same as in Clojure
+(defn acos  [x]   (Math/acos x))
+(defn asin  [x]   (Math/asin x))
+(defn cos   [x]   (Math/cos x))
+(defn exp   [x]   (Math/exp x))
+(defn fix   [x]   (assert false))
+(defn fup   [x]   (assert false))
+(defn round [x]   (assert false))
+(defn ln    [x]   (assert false))
+(defn sin   [x]   (Math/sin x))
+(defn sqrt  [x]   (Math/sqrt x))
+(defn tan   [x]   (Math/tan x))
+
+; EXISTS
+; PARAMETER

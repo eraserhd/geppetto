@@ -5,5 +5,5 @@
    [eftest.runner :as eftest]))
 
 (defn run-tests
-  ([]          (run-tests "test"))
+  ([]          (run-tests "src" "test"))
   ([& symbols] (eftest/run-tests (eftest/find-tests symbols) {:capture-output? false})))

@@ -1,4 +1,5 @@
-(ns net.eraserhead.geppetto.expression.builtins)
+(ns net.eraserhead.geppetto.expression.builtins
+  (:refer-clojure :exclude [and]))
 
 (defn **
   "Raise a to power b."
@@ -35,8 +36,9 @@
             (assert (gt 2 1))
             (assert (not (gt 0 1e-6))))}
   [a b]
-  (and (not (eq a b))
-       (> a b)))
+  (clojure.core/and
+    (not (eq a b))
+    (> a b)))
 
 (defn ge
   "Greater than or equal to (see eq)."
@@ -52,8 +54,9 @@
             (assert (not (lt 1 1)))
             (assert (not (lt 0 1e-7))))}
   [a b]
-  (and (not (eq a b))
-       (< a b)))
+  (clojure.core/and
+    (not (eq a b))
+    (< a b)))
 
 (defn le
   "Less than or equal to (see eq)."
@@ -64,4 +67,20 @@
   [a b]
   (or (eq a b) (< a b)))
 
-;; AND OR XOR
+(defn and
+  "Logical AND.
+
+  Returns 1 if both arguments are non-zero, 0 otherwise."
+  {:test #(do
+            (zero? (and 0 0))
+            (zero? (and 0 1))
+            (zero? (and 1 0))
+            (not (zero? (and 1 1))))}
+  [a b]
+  (if (clojure.core/and
+        (not (zero? a))
+        (not (zero? b)))
+    1
+    0))
+
+;; OR XOR

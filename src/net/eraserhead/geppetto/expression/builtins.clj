@@ -71,6 +71,9 @@
     (eq a b)
     (< a b)))
 
+(defn- falsey? [x] (eq 0 x))
+(defn- truthy? [x] (not (falsey? x)))
+
 (defn and
   "Logical AND.
 
@@ -79,11 +82,10 @@
             (assert (zero? (and 0 0)))
             (assert (zero? (and 0 1)))
             (assert (zero? (and 1 0)))
+            (assert (zero? (and 9e-7 9e-7)))
             (assert (not (zero? (and 1 1)))))}
   [a b]
-  (if (clojure.core/and
-        (not (zero? a))
-        (not (zero? b)))
+  (if (clojure.core/and (truthy? a) (truthy? b))
     1
     0))
 
@@ -95,12 +97,11 @@
             (assert (zero? (or 0 0)))
             (assert (not (zero? (or 0 1))))
             (assert (not (zero? (or 1 0))))
-            (assert (not (zero? (or 1 1)))))}
+            (assert (not (zero? (or 1 1))))
+            (assert (zero? (or 9e-7 9e-7))))}
   [a b]
-  (if (clojure.core/or
-        (not (zero? a))
-        (not (zero? b)))
+  (if (clojure.core/or (truthy? a) (truthy? b))
     1
     0))
 
-;; OR XOR
+;; XOR

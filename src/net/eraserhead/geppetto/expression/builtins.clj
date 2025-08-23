@@ -104,4 +104,18 @@
     1
     0))
 
-;; XOR
+(defn xor
+  "Logical XOR.
+
+  Returns 1 if either--bot not both--arguments are non-zero, 0 otherwise."
+  {:test #(do
+            (assert (= 0 (xor 0 0)))
+            (assert (= 1 (xor 1 0)))
+            (assert (= 1 (xor 0 1)))
+            (assert (= 0 (xor 1 1))))}
+  [a b]
+  (case [(truthy? a) (truthy? b)]
+    [false false] 0
+    [true  false] 1
+    [false true ] 1
+    [true  true ] 0))

@@ -136,5 +136,45 @@
 (defn sqrt  [x]   (Math/sqrt x))
 (defn tan   [x]   (Math/tan x))
 
-; EXISTS
-; PARAMETER
+
+(def ^:dynamic *parameters* {})
+
+(defn parameter
+  "Returns value of parameter"
+  {:test #(binding [*parameters* {"foo" 42
+                                  97    66
+                                  "_g0" 78}]
+            (assert (= 66 (parameter 97)))
+            (assert (= 0  (parameter 86)))
+            (assert (= 42 (parameter "foo")))
+            (assert (= 78 (parameter "_g0")))
+            (assert (= 0  (parameter "_g1")))
+            (assert (try
+                      (parameter "missing_local")
+                      false
+                      (catch Exception e
+                        true))))}
+  [p]
+  (let [value (get *parameters* p ::missing)]
+    (cond
+     (clojure.core/and (= ::missing value) (string? p) (= \_ (get p 0)))
+     0
+
+     (clojure.core/and (= ::missing value) (number? p))
+     0
+
+     (= ::missing value)
+     (throw (ex-info "Attempt to access unset local parameter." {:parameter p}))
+
+     :else
+     value)))
+
+(defn exists
+  "Returns 1 if variables exists, 0 otherwise."
+  {:test #(binding [*parameters* {"foo" 0}]
+            (assert (= 1 (exists "foo")))
+            (assert (= 0 (exists "bar"))))}
+  [p]
+  (if (contains? *parameters* p)
+    1
+    0))

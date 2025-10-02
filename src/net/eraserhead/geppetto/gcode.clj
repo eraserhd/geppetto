@@ -33,4 +33,13 @@
    ::stop ; Stop (M0, M1, M2, M30, M60).
    ,])
 
-(def parse-line (comp :value #(k/parse p/line %)))
+(defn parse-line
+  "Parse a line of gcode.
+
+  The result is a vector of block components.  Every block component
+  except ::block-delete is inside a vector.  See net.eraserhead.geppetto.gcode-test
+  for a full list of items."
+  [line]
+  (-> (k/parse p/line line)
+      :value
+      (with-meta {:source-text line})))

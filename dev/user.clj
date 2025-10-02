@@ -1,4 +1,4 @@
-(ns dev
+(ns user
   (:require
    [clojure.repl :refer [apropos doc dir source find-doc]]
    [clojure.tools.namespace.repl :refer [refresh]]

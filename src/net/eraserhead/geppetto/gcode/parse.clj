@@ -207,9 +207,9 @@
                          (<*> (token "endif"))
                          (<*> (token "repeat") real-value)
                          (<*> (token "endrepeat")))]
-    (return (into
-             [(keyword "net.eraserhead.geppetto.gcode" (name t)) o]
-             args))))
+    (return [(into
+              [(keyword "net.eraserhead.geppetto.gcode" (name t)) o]
+              args)])))
 
 (def semi-comment
   (bind [_    (sym \;)

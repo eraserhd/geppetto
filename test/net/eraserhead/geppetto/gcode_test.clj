@@ -159,39 +159,39 @@
    "(probEC LOSEX)"    '[[::gcode/comment "probEC LOSEX"]]
 
    ;; O Codes, 4. Subroutines
-   "o100 sub"          '[::gcode/sub 100]
-   "o101 endsub"       '[::gcode/endsub 101 nil]
-   "o102 call [1] [3]" '[::gcode/call 102 [1 3]]
-   "o102 call #2 [2+4]"'[::gcode/call 102 [(parameter 2) (+ 2 4)]]
-   "o103 return"       '[::gcode/return 103 nil]
+   "o100 sub"          '[[::gcode/sub 100]]
+   "o101 endsub"       '[[::gcode/endsub 101 nil]]
+   "o102 call [1] [3]" '[[::gcode/call 102 [1 3]]]
+   "o102 call #2 [2+4]"'[[::gcode/call 102 [(parameter 2) (+ 2 4)]]]
+   "o103 return"       '[[::gcode/return 103 nil]]
 
    ;; O Codes, 5. Looping
-   "o104 while [#1 LT 10]" '[::gcode/while 104 (lt (parameter 1) 10)]
-   "o105 endwhile"     '[::gcode/endwhile 105]
-   "o106 do"           '[::gcode/do 106]
-   "o107 break"        '[::gcode/break 107]
-   "o108 continue"     '[::gcode/continue 108]
+   "o104 while [#1 LT 10]" '[[::gcode/while 104 (lt (parameter 1) 10)]]
+   "o105 endwhile"     '[[::gcode/endwhile 105]]
+   "o106 do"           '[[::gcode/do 106]]
+   "o107 break"        '[[::gcode/break 107]]
+   "o108 continue"     '[[::gcode/continue 108]]
 
    ;; O Codes, 6. Conditional
-   "o109 if [#31 EQ 3]"'[::gcode/if 109 (eq (parameter 31) 3)]
-   "o110 elseif [#2 LT 2]"'[::gcode/elseif 110 (lt (parameter 2) 2)]
-   "o111 else"         '[::gcode/else 111]
-   "o112 endif"        '[::gcode/endif 112]
+   "o109 if [#31 EQ 3]"'[[::gcode/if 109 (eq (parameter 31) 3)]]
+   "o110 elseif [#2 LT 2]"'[[::gcode/elseif 110 (lt (parameter 2) 2)]]
+   "o111 else"         '[[::gcode/else 111]]
+   "o112 endif"        '[[::gcode/endif 112]]
 
    ;; O Codes, 7. Repeat
-   "o113 repeat [5]"   '[::gcode/repeat 113 5]
-   "o114 endrepeat"    '[::gcode/endrepeat 114]
+   "o113 repeat [5]"   '[[::gcode/repeat 113 5]]
+   "o114 endrepeat"    '[[::gcode/endrepeat 114]]
 
    ;; O Codes, 8. Indirection
-   "o[#101+2] call"    '[::gcode/call (+ (parameter 101) 2) []]
+   "o[#101+2] call"    '[[::gcode/call (+ (parameter 101) 2) []]]
 
    ;; O Codes, 9. Calling Files
-   "o<myfile> call"    '[::gcode/call "myfile" []]
-   "o<MyFile> call"    '[::gcode/call "myfile" []]
-   "o<myfile> sub"     '[::gcode/sub "myfile"]
-   "o<myfile> endsub"  '[::gcode/endsub "myfile" nil]
-   "o<myfile> return"  '[::gcode/return "myfile" nil]
+   "o<myfile> call"    '[[::gcode/call "myfile" []]]
+   "o<MyFile> call"    '[[::gcode/call "myfile" []]]
+   "o<myfile> sub"     '[[::gcode/sub "myfile"]]
+   "o<myfile> endsub"  '[[::gcode/endsub "myfile" nil]]
+   "o<myfile> return"  '[[::gcode/return "myfile" nil]]
 
    ;; O Codes, 10. Subroutine return values
-   "o123 return [#2 * 5]" '[::gcode/return 123 (* (parameter 2) 5)]
-   "o123 endsub [3 * 4]"  '[::gcode/endsub 123 (* 3 4)]))
+   "o123 return [#2 * 5]" '[[::gcode/return 123 (* (parameter 2) 5)]]
+   "o123 endsub [3 * 4]"  '[[::gcode/endsub 123 (* 3 4)]]))

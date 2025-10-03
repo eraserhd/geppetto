@@ -138,17 +138,17 @@
 
 (defn atan [a b] (Math/atan2 a b))
 ; abs - same as in Clojure
-(defn acos  [x]   (Math/acos x))
-(defn asin  [x]   (Math/asin x))
-(defn cos   [x]   (Math/cos x))
-(defn exp   [x]   (Math/exp x))
-(defn fix   [x]   (Math/floor x))
-(defn fup   [x]   (Math/ceil x))
-(defn round [x]   (Math/round x))
-(defn ln    [x]   (Math/log x))
-(defn sin   [x]   (Math/sin x))
-(defn sqrt  [x]   (Math/sqrt x))
-(defn tan   [x]   (Math/tan x))
+(defn acos  [x]  (Math/acos x))
+(defn asin  [x]  (Math/asin x))
+(defn cos   [x]  (Math/cos x))
+(defn exp   [x]  (Math/exp x))
+(defn fix   [x]  (Math/floor x))
+(defn fup   [x]  (Math/ceil x))
+(defn round [x]  (Math/round x))
+(defn ln    [x]  (Math/log x))
+(defn sin   [x]  (Math/sin x))
+(defn sqrt  [x]  (Math/sqrt x))
+(defn tan   [x]  (Math/tan x))
 
 
 (def ^:dynamic *parameters* {})

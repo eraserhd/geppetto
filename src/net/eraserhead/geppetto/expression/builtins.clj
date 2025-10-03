@@ -26,7 +26,7 @@
             (assert (falsey? (eq 1 2)))
             (assert (falsey? (eq 0 1e-6))))}
   [a b]
-  (if (< (abs (- a b)) 1e-6)
+  (if (falsey? (- a b))
     1
     0))
 
